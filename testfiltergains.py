@@ -1,15 +1,14 @@
-ACQTIME = 2.0
-SPS = 920
-VRANGE = 4096
+ACQTIME = 2.0 #Length of time interval to record ADC data
+SPS = 920 #Samples per second to collect data. Options: 128, 250, 490, 920, 1600, 2400, 3300.
+VRANGE = 4096 #Full range scale in mV. Options: 256, 512, 1024, 2048, 4096, 6144.
 nsamples = int(ACQTIME*SPS)
 sinterval = 1.0/SPS
 
-import sys
 import time
 import numpy as np
 import matplotlib.pyplot as plt
 import pickle
-import collections
+from collections import OrderedDict
 from Adafruit import ADS1x15
 
 print()
@@ -18,92 +17,130 @@ print()
 
 adc = ADS1x15()
 
-def get_freq_power():
+def get_freq_amp():
+    """
+    Function which records ADC data, plots the data and fourier transform (mean zero),
+    prints the maximum frequency, and returns the fourier transform magnitude.
+    """
     indata = np.zeros(nsamples, 'float')
-    
     adc.startContinuousDifferentialConversion(2, 3, pga=VRANGE, sps=SPS)
-
-    input('Press <Enter> to start %.1f s data acquisition...' % ACQTIME)
-    print()
+    print('Starting %.1f s of data acquisition...' % ACQTIME)
 
     t0 = time.perf_counter()
-
-    for i in range(nsamples):
+    for i in range(nsamples): #Collects data every sinterval
         st = time.perf_counter()
-        indata[i] = 0.001*adc.getLastConversionResults()
+        indata[i] = 0.001*adc.getLastConversionResults() #Times 0.001 since adc measures in mV
+        indata[i] -= 3.3 #ADC ground is 3.3 volts below circuit ground
         while (time.perf_counter() - st) <= sinterval:
-                pass
-
+            pass
+    
     t = time.perf_counter() - t0
-
     adc.stopContinuousConversion()
+    print('Time elapsed: %.9f s.' % t) #Can compare time elapsed to acquire time
 
     xpoints = np.arange(0, ACQTIME, sinterval)
-
-    print('Time elapsed: %.9f s.' % t)
-    print()
-
+    plt.close('all')
     f1, ax1 = plt.subplots()
     ax1.plot(xpoints, indata)
-    f1.show()
+    ax1.set(xlabel='Time (s)', ylabel='Voltage (V)', title='Input Signal')    
 
-    ave=np.mean(indata)
-    newdata=indata-ave
+    newdata=indata-np.mean(indata)
     ft = np.fft.fft(newdata)
     ftnorm = abs(ft)
-    ps =ftnorm**2
-    xvals = np.fft.fftfreq(len(ps), d=1.0/SPS)
+    xvals = np.fft.fftfreq(len(ftnorm), d=1.0/SPS)
     f2, ax2 =plt.subplots()
-    plt.xlim(0,500)
-    ax2.plot(xvals, ps)
-    f2.show()
+    plt.xlim(0,150)
+    ax2.plot(xvals, ftnorm)
+    ax2.set(xlabel='Frequency (Hz)', ylabel='FFT Magnitude', title='Fourier Transform')
 
-    valuemax=np.amax(ps)
-    freqwhere=np.where(ps==valuemax)
+    valuemax=np.amax(ftnorm)
+    freqwhere=np.where(ftnorm==valuemax)
     freqmax=xvals[freqwhere[0]]
     if freqmax.shape != (1,1):
         freqmax=freqmax[0]
     print('Dominant Frequency is: ', int(abs(freqmax)), 'Hz')
-    
+    print('Maximum FFT amplitude is ', valuemax)
+    print()
     return valuemax
 
-response = input('Load existing data file? (y/n)')
-if response == 'n':
-    filter_gain_data = collections.OrderedDict()
-elif response == 'y':
-    filename = input('File name to load gain data: ')
-    file = open(filename, 'rb')
-    filter_gain_data = pickle.load(file)
-    file.close()
-    
+"""
+Asks user if they want to load an existing data file to edit.
+"""
+while True:
+    response = input('Load existing data file? (y/n)')
+    if response == 'n':
+        filter_data = np.array([OrderedDict(), OrderedDict()])
+        break
+    elif response == 'y':
+        while True:
+            filename = input('File name to load gain data: ')
+            try:
+                file = open(filename, 'rb')
+                filter_data = pickle.load(file)
+                file.close()
+                break
+            except:
+                print('Please enter a valid file name.')
+        break
+    else:
+        print('Please enter \'y\' or \'n\' ')
+
+"""
+Asks user how many times to sample data to get standard deviation estimate.
+"""
+while True:
+    try:
+        num_measurements = int(input('Please enter how many measurements to make for each frequency: '))
+        break
+    except:
+        print('Please enter an integer')
+
+"""
+Saves data for plotting by pickling a 2 element array. Each array is an ordered dictionary, both have integer
+frequency for keys and the first and second dictionary have values of gain and std deviation respectively. 
+"""
 end_program = 'n'
-while end_program != 'y':
-    freq = input('Please enter the frequency you want to test:')
+while end_program != 'y': #Loops every time user records data for new frequency
+    while True:
+        try:
+            freq = int(input('Please enter the frequency you want to test:'))
+            break
+        except:
+            print('Please enter an integer frequency')
     
-    input('Press Enter to test with no filter')
-    freq_power_no_filter = get_freq_power()
-    print('Maximum frequency power is ', freq_power_no_filter, ' for no filter')
+    freq_amp_no_filter = np.zeros((num_measurements)) #saves for num_measurement runs
+    freq_amp_with_filter = np.zeros((num_measurements))
     
-    input('Press Enter to test with filter')
-    plt.close('all')
-    freq_power_with_filter = get_freq_power()
-    print('Maximum frequency power is ', freq_power_with_filter, ' with filter')
+    input('Press <Enter> to test with no filter')
+    print()
+    for i in range(num_measurements):
+        freq_amp_no_filter[i] = get_freq_amp()
+    plt.show()
+    print()
     
-    gain = freq_power_with_filter/freq_power_no_filter
-    print('Gain is ', gain)
-    filter_gain_data[freq] = gain
-    end_program = input('Do you want to end program? (y/n)')
-    print('\n \n')
-    plt.close('all')
+    input('Press <Enter> to test with filter')
+    print()
+    for i in range(num_measurements):
+        freq_amp_with_filter[i] = get_freq_amp()
+    plt.show()
+    gain = np.divide(freq_amp_with_filter, freq_amp_no_filter)
+    print('Voltage gain is ', np.mean(gain))
+    filter_data[0][freq] = np.mean(gain)
+    filter_data[1][freq] = np.std(gain)
+    while True:
+        end_program = input('Do you want to end program? (y/n)')
+        if end_program in ['y', 'n']:
+            break
+        else:
+            print('Please enter \'y\' or \'n\' ')
+    print('\n \n \n')
 
 while True:
     filename = input('Enter file name to save gain data (should end with .pickle)')
     try:
         file = open(filename, 'wb')
-        pickle.dump(filter_gain_data, file)
+        pickle.dump(filter_data, file)
         file.close()
+        break
     except:
         print('Please enter a valid file name.')
-    else:
-        break
-    

@@ -1,6 +1,6 @@
 ACQTIME = 5
 SPS = 920
-VRANGE = 4096
+VRANGE = 6144  
 nsamples = int(ACQTIME*SPS)
 sinterval = 1.0/SPS
 
@@ -28,10 +28,10 @@ t0 = time.perf_counter()
 
 for i in range(nsamples):
         st = time.perf_counter()
-        indata[i] = 0.001*adc.getLastConversionResults()
-        #if indata[i] > 4:
-        #        indata[i] = indata[i]-2*0.001*VRANGE
-        #print(indata[i])
+        indata[i] = 0.001*adc.getLastConversionResults() #Gets voltage in volts
+        if indata[i] > 0.001*VRANGE:
+                indata[i] = indata[i]-2*0.001*VRANGE #If in upper half of vrange, should be negative
+        indata[i] -= 3.3 #adc ground is 3.3 volts below circuit ground 
         while (time.perf_counter() - st) <= sinterval:
                 pass
 
@@ -65,5 +65,9 @@ freqmax=xvals[freqwhere[0]]
 if freqmax.shape != (1,1):
         freqmax=freqmax[0]
 print('Dominant Frequency is: ', int(abs(freqmax)), 'Hz')
+alphamin=8
+alphamax=12
+alphamag=np.mean(ps[(xvals <= alphamax) & (xvals >= alphamin)])
+print('Alpha wave magnitude is: ' + str(alphamag))
 input('\nPress <Enter> to exit...\n')
 
