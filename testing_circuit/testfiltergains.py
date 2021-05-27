@@ -1,15 +1,24 @@
+"""
+PROGRAM DESCRIPTION:
+
+We use this program to calculate gain as a function of frequency for various circuit filters. We used an
+openscope to generate signals at certain frequencies and used an ADC to measure the gain. This program saves
+the data in pickle form at the end.
+"""
+
+import time
+import numpy as np
+from scipy.stats import sem
+import matplotlib.pyplot as plt
+import pickle
+from collections import OrderedDict
+from Adafruit import ADS1x15
+
 ACQTIME = 2.0 #Length of time interval to record ADC data
 SPS = 920 #Samples per second to collect data. Options: 128, 250, 490, 920, 1600, 2400, 3300.
 VRANGE = 4096 #Full range scale in mV. Options: 256, 512, 1024, 2048, 4096, 6144.
 nsamples = int(ACQTIME*SPS)
 sinterval = 1.0/SPS
-
-import time
-import numpy as np
-import matplotlib.pyplot as plt
-import pickle
-from collections import OrderedDict
-from Adafruit import ADS1x15
 
 print()
 print('Initializing ADC...')
@@ -86,7 +95,7 @@ while True:
         print('Please enter \'y\' or \'n\' ')
 
 """
-Asks user how many times to sample data to get standard deviation estimate.
+Asks user how many times to sample data to get standard error estimate.
 """
 while True:
     try:
@@ -97,7 +106,7 @@ while True:
 
 """
 Saves data for plotting by pickling a 2 element array. Each array is an ordered dictionary, both have integer
-frequency for keys and the first and second dictionary have values of gain and std deviation respectively. 
+frequency for keys and the first and second dictionary have values of gain and std error respectively. 
 """
 end_program = 'n'
 while end_program != 'y': #Loops every time user records data for new frequency
@@ -125,8 +134,9 @@ while end_program != 'y': #Loops every time user records data for new frequency
     plt.show()
     gain = np.divide(freq_amp_with_filter, freq_amp_no_filter)
     print('Voltage gain is ', np.mean(gain))
+    print('Standard error is ', sem(gain))
     filter_data[0][freq] = np.mean(gain)
-    filter_data[1][freq] = np.std(gain)
+    filter_data[1][freq] = sem(gain)
     while True:
         end_program = input('Do you want to end program? (y/n)')
         if end_program in ['y', 'n']:

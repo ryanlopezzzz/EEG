@@ -29,8 +29,8 @@ t0 = time.perf_counter()
 for i in range(nsamples):
         st = time.perf_counter()
         indata[i] = 0.001*adc.getLastConversionResults() #Gets voltage in volts
-        if indata[i] > 0.001*VRANGE:
-                indata[i] = indata[i]-2*0.001*VRANGE #If in upper half of vrange, should be negative
+        #if indata[i] > 0.001*VRANGE:
+        #        indata[i] = indata[i]-2*0.001*VRANGE #If in upper half of vrange, should be negative
         indata[i] -= 3.3 #adc ground is 3.3 volts below circuit ground 
         while (time.perf_counter() - st) <= sinterval:
                 pass
