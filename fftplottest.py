@@ -1,6 +1,6 @@
-ACQTIME = 5
-SPS = 920
-VRANGE = 6144  
+ACQTIME = 10
+SPS = 920 #Samples per second to collect data. Options: 128, 250, 490, 920, 1600, 2400, 3300.
+VRANGE = 6144 #Full range scale in mV. Options: 256, 512, 1024, 2048, 4096, 6144.
 nsamples = int(ACQTIME*SPS)
 sinterval = 1.0/SPS
 
@@ -46,6 +46,7 @@ print()
 
 f1, ax1 = plt.subplots()
 ax1.plot(xpoints, indata)
+ax1.set(xlabel='Time (s)', ylabel='Voltage', title='Raw Signal')    
 f1.show()
 
 ave=np.mean(indata)
@@ -55,8 +56,9 @@ ftnorm = abs(ft)
 ps =ftnorm**2
 xvals = np.fft.fftfreq(len(ps), d=1.0/SPS)
 f2, ax2 =plt.subplots()
-plt.xlim(0,100)
+plt.xlim(0,500)
 ax2.plot(xvals, ps)
+ax2.set(xlabel='Frequency (Hz)', ylabel='FFT Magnitude', title='Fourier Transfrom')    
 f2.show()
 
 valuemax=np.amax(ps)
