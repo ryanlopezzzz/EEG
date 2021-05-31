@@ -5,7 +5,7 @@ This project builds an EEG circuit which will allow the user to send morse code 
 EEG stands for electroencephalogram. It measures voltage fluctuations resulting from ionic current within the neurons of the brain. 
 Neurons exchange ions with environment and when many ions are pushed out of many neurons at the same time, they repel and push each other forming a wave. The waves reachs scalp and can be captured by the electrodes. Note that EEG does not capture the activities of single neurons-the electric potential is way to small to be captured. Instead, EEG measures the voltage difference in 2 electrodes over time, which reflect synchronized activity over a network of neurons. Spatially well-aligned neurons fire together, so the electrode placements need to be in specific regions to observe oscillations/waves of interest. These waves have different characteristic frequency, magnitude, and are related to different brain activties. 
 
-In our project, we measure alpha waves originating from the occipital lobe because they are one of the strongest EEG signals. Alpha waves have a signature frequency in the range of 8-12 HZ. Alpha waves are reduced with open eyes, drowsiness, and sleep. It is still under study but main stream research shows it represent the activity of the visual cortex in an idle state.
+In our project, we measure alpha waves originating from the occipital lobe because they are one of the strongest EEG signals. Alpha waves have a signature frequency in the range of 8-12 HZ. Alpha waves are reduced with open eyes, drowsiness, and sleep. It is still under study but main stream research shows it represent the activity of the visual cortex in an idle state. Our circuit also has the capacity to measure beta waves (12-30 HZ).
 
 # Methods
 
