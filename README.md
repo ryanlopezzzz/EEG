@@ -33,21 +33,29 @@ Individual Sections will be discussed further below.
 
 ## Instrumental Amplifier (gain ~91)
 ![](images/circuit1.png)
+Alpha wave signals is 15-50 uV so we need a lot of amplification in the circuit. 
+An instrumentation amplifier takes as its inputs 2 voltages, and outputs the difference between the two multiplied by some gain given by: G = 1 + (50.5 kOhm)/R, where R is the total resistance between pin 1 and 8. 
 
 ## Notch Filter (60 HZ, gain = 1)
 ![](images/circuit2.png)
+The biggest source of noise in our system is centered at 60 Hz due to power line interference. This noise is present even though we use batteries to power the circuit. Thus we have 2 notch filters in the circuit. The notch frequency is given by f = 1/(2 PI R C) where R = R3 = R5. The other two resistor values are related to the quality factor of the filter, which determines how sharp the attenuation is.
 
 ## High Pass Filter (Fc = 7.2 Hz)
 ![](images/circuit3.png)
+The high pass filter is mainly used to filter out galvanic skin response across our head. This will obscure the brain data we want, and as this interference is primarily low frequency. Here, we use a second order design. 
 
 ## Low Pass Filter (Fc = 32.9 Hz)
 ![](images/circuit4.png)
+Another potential wave we could measure is the beta wave, which stops at 30 HZ. Thus, we are not interested in frequency > 30HZ and filter them out. 
+We also use a second order design for the low pass filter.
 
 ## Instrumental Amplifier with variable gain (gain ~ 90-460)
 ![](images/circuit5.png)
+Alpha wave amplitude varies from person to person, so we use the potentiometer to design an amplifier with variable gain. 
 
 ## Notch Filter (60 HZ, gain = 1)
 ![](images/circuit6.png)
+Another 60 HZ is necessary at the end of the circuit since the power line interference likely sneaks into the circuit through prior steps. 
 
 # Results
 We built our circuit to measure Alpha waves which are from 8-12Hz. When relaxed the power of these waves should increase and when concentrating the power of these waves should decrease. To test relaxed state the user closes their eyes, to test concentrating the user opens their eyes and look at 'crazy' images.
