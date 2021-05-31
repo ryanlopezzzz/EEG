@@ -49,7 +49,8 @@ An instrumentation amplifier takes as its inputs 2 voltages, and outputs the dif
 
 ### 1st Notch Filter (60 HZ, gain = 1)
 <img src="images/circuit2.png" width=600>
-The biggest source of noise in our system is centered at 60 Hz due to power line interference. Click [here](https://www.intechopen.com/books/compendium-of-new-techniques-in-harmonic-analysis/cancelling-harmonic-power-line-interference-in-biopotentials) to learn more about PLI in biopotentials applications. This noise is present even though we use batteries to power the circuit. Thus we have 2 notch filters in the circuit (filters that have a severe reduction of gain around 1 particular frequency). The first notch filter intends to filter out interference before more gains are applied. 
+The biggest source of noise in our system is centered at 60 Hz due to power line interference. This noise is present even though we use batteries to power the circuit. Thus we have 2 notch filters in the circuit (filters that have a severe reduction of gain around 1 particular frequency). The first notch filter intends to filter out interference before more gains are applied. 
+* [More readings on PLI in biopotentials applications](https://www.intechopen.com/books/compendium-of-new-techniques-in-harmonic-analysis/cancelling-harmonic-power-line-interference-in-biopotentials)
 
 The notch frequency is given by f = 1/(2 PI R C) where R = R3 = R5. The other two resistor values are related to the quality factor of the filter, which determines how sharp the attenuation is.
 
