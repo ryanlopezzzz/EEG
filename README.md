@@ -30,7 +30,7 @@ The voltage difference oscillations between the 2nd and 3rd electrodes are the t
 
 ## Circuit Design
 ![](images/circuit.png)
-The above picture is the final schematic. Note that the circuit ground is in fact 3.3V above the ADC ground to make sure the signal is always positive because the ADC chip cannot read negative voltage. The electrode behind the ear is connected to the circuit ground. The other two electrodes are fed into the first instrumental amplifier.
+The above picture is the final schematic. Note that the circuit ground is in fact 3.3V above the ADC ground to make sure the signal is always positive because the ADC chip cannot read negative voltage. The electrode behind the ear is connected to the circuit ground. The other two electrodes are fed into the first instrumental amplifier. The instrumental amplifiers are fed with -9V to 9V of power, by connecting one 9V battery the correct way, and one backwards.
 
 The circuit can be roughly divided into the following sections:
 * Instrumental Amplifier (gain ~91)
@@ -45,30 +45,48 @@ Individual Sections are discussed further below.
 ### Instrumental Amplifier (gain ~91)
 <img src="images/circuit1.png" width=400>
 Alpha wave signals is 15-50 uV so we need a lot of amplification in the circuit. 
-An instrumentation amplifier takes as its inputs 2 voltages, and outputs the difference between the two multiplied by some gain given by: G = 1 + (50.5 kOhm)/R, where R is the total resistance between pin 1 and 8. 
+An instrumentation amplifier takes as its inputs 2 voltages, and outputs the difference between the two multiplied by some gain given by: G = 1 + (50.5 kOhm)/R, where R is the total resistance between pin 1 and 8. Note it is possible to make home-made instrumentation amplifier usually with 3 op-amps. However, it suffers from a low CMRR unless precision resitors are used.
 
 ### 1st Notch Filter (60 HZ, gain = 1)
 <img src="images/circuit2.png" width=600>
-The biggest source of noise in our system is centered at 60 Hz due to power line interference. This noise is present even though we use batteries to power the circuit. Thus we have 2 notch filters in the circuit. The notch frequency is given by f = 1/(2 PI R C) where R = R3 = R5. The other two resistor values are related to the quality factor of the filter, which determines how sharp the attenuation is.
+The biggest source of noise in our system is centered at 60 Hz due to power line interference. Click [here](https://www.intechopen.com/books/compendium-of-new-techniques-in-harmonic-analysis/cancelling-harmonic-power-line-interference-in-biopotentials) to learn more about PLI in biopotentials applications. This noise is present even though we use batteries to power the circuit. Thus we have 2 notch filters in the circuit (filters that have a severe reduction of gain around 1 particular frequency). The first notch filter intends to filter out interference before more gains are applied. 
+
+The notch frequency is given by f = 1/(2 PI R C) where R = R3 = R5. The other two resistor values are related to the quality factor of the filter, which determines how sharp the attenuation is.
 
 ### High Pass Filter (Fc = 7.2 Hz)
 <img src="images/circuit3.png" width=600>
-The high pass filter is mainly used to filter out galvanic skin response across our head. This will obscure the brain data we want, and as this interference is primarily low frequency. Here, we use a second order design. 
+The high pass filter intends to filter out frequencies corresponding to galvanic skin response across our head. This interference is primarily low frequency. A second order filter design is used here and is shown to be necessary for noise reduction. 
 
 ### Low Pass Filter (Fc = 32.9 Hz)
 <img src="images/circuit4.png" width=600>
-Another potential wave we could measure is the beta wave, which stops at 30 HZ. Thus, we are not interested in frequency > 30HZ and filter them out. 
-We also use a second order design for the low pass filter.
+The EEG waves of interest to our project are alpha (8-12 HZ) and beta waves (12-30 HZ). Thus, we are not interested in frequency > 30HZ and filter them out. A second order filter design is used.
 
 ### Instrumental Amplifier with variable gain (gain ~ 90-460)
 <img src="images/circuit5.png" width=400>
-Alpha wave amplitude varies from person to person, so we use the potentiometer to design an amplifier with variable gain. 
+
+This 90-460 gain is on top of the 90x gain from the first instrumentation amplifier. Alpha wave amplitude varies from person to person, from about 10 to 30 uV. Using a middle value of 20 uV, this means the ending voltage reading could range from 90*90*20e-6 = 0.162V to 460*90*20e-6 = 0.828V. The variable gain is achieved by putting resitors in series and in parallel. The gain is roughly in the range of 90-460, which corresponds to potentiometer value 1k (maximum) to 0 (minimum).
+
+To adjust the potentiometer, start taking readings and make sure one is not moving at all. Make sure voltages don't fluctuate offscreen, but avoid making it too small because then the errors incurred from digitally reading the data into rpi would be relatively increased. 
 
 ### 2nd Notch Filter (60 HZ, gain = 1)
 <img src="images/circuit6.png" width=600>
 Another 60 HZ is necessary at the end of the circuit since the power line interferences seep into the circuit through prior steps. 
 
+## Post-processing (LINK THE CODE IN GITHUB TO EACH RELEVANT SECTION)
+### Data Taking Methods
+### Gaussian Analysis and Voltage Threshold
+
+
+
+### Single Component Analysis for Eliminating Anomalies
+
+
 # Results
+
+## Filter Performance
+
+
+## Alpha Wave Data
 We built our circuit to measure Alpha waves which are from 8-12Hz. When relaxed the power of these waves should increase and when concentrating the power of these waves should decrease. To test relaxed state the user closes their eyes, to test concentrating the user opens their eyes and look at 'crazy' images.
 
 ### Lower Amplification Tests:
@@ -90,3 +108,8 @@ We built our circuit to measure Alpha waves which are from 8-12Hz. When relaxed 
 | 5,077 | 39, 640 |
 |11,051 | 55,365 |
 | 5,748 | 32,897 |
+
+# Next Step
+## Remaining issues in the circuit
+## Future improvement
+## Potential Application
