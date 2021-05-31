@@ -76,17 +76,23 @@ Another 60 HZ is necessary at the end of the circuit since the power line interf
 
 ## Post-processing (LINK THE CODE IN GITHUB TO EACH RELEVANT SECTION)
 ### Data Taking Methods
-### Gaussian Analysis and Voltage Threshold
+### Gaussian Analysis and Voltage Threshold 
+[Gaussian_eval.py](link later)
+
+This code is created to 1) find the optimal voltage threshold which separates relaxed and concentrated data and 2) Evaluate how distinct the relaxed and concentrated datasets using statistical analysis.
+
+We approximate concentrated and relaxed brain wave data sets each as normal Gaussian distributions. The cross point of the two gaussians give the best threshold voltage V0 which separates relaxed and concentrated data. This voltage threhold would minimizes overall wrong classifications. The overlap area divided by 2 give the probability of wrong classification since we have two normal distributions. More specifically, the ratio of overlap area left of V0 to right of V0 gives the percentage of wrong estimation being we guessed concentrated but is actually relaxed.
 
 
-
-### Single Component Analysis for Eliminating Anomalies
+### Independent Component Analysis for Eliminating Anomalies
 
 
 # Results
 
 ## Filter Performance
-
+<img src="testing_circuit/figures/circuit_VG.png" width=600>
+<img src="testing_circuit/figures/circuit_dB.png" width=600>
+(EXPLAIN DB AND TALK ABOUT THE NECESSARY LEVEL OF NOISE ATTENUATION TO SEE BRAIN WAVE DATA)
 
 ## Alpha Wave Data
 We built our circuit to measure Alpha waves which are from 8-12Hz. When relaxed the power of these waves should increase and when concentrating the power of these waves should decrease. To test relaxed state the user closes their eyes, to test concentrating the user opens their eyes and look at 'crazy' images.
@@ -112,6 +118,15 @@ We built our circuit to measure Alpha waves which are from 8-12Hz. When relaxed 
 | 5,748 | 32,897 |
 
 # Next Step
-## Remaining issues in the circuit
+## Remaining issues
+* Electrode placement needs to be pin-pointed and quite exact
+
+
 ## Future improvement
 ## Potential Application
+* Meditation Score App based on Alpha Wave
+* Child Concentration Monitor
+
+# Reference and Acknolwedgement
+* The project owes much thanks to instructables.com/DIY-EEG-and-ECG-Circuit/. We have based our procedures and methods on the instructions in this article, but we created our own circuit design and wrote our own code for data-taking and analysis. 
+* EEG and Alpha Wave informtions are largely from Wikipedia.
