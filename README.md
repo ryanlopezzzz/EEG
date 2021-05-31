@@ -10,7 +10,7 @@ This project builds an EEG headset which will allow the user to send morse code 
 * Potentiometer CT6EW102-ND, 1kOhm
 
 # Circuit Design
-![]()
+![](images/circuit.png)
 
 
 # Results
