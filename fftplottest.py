@@ -58,7 +58,7 @@ xvals = np.fft.fftfreq(len(ps), d=1.0/SPS)
 f2, ax2 =plt.subplots()
 plt.xlim(0,500)
 ax2.plot(xvals, ps)
-ax2.set(xlabel='Frequency (Hz)', ylabel='FFT Magnitude', title='Fourier Transfrom')    
+ax2.set(xlabel='Frequency (Hz)', ylabel='FFT Power Spectrum', title='Power Spectrum')    
 f2.show()
 
 valuemax=np.amax(ps)

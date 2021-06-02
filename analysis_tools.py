@@ -1,4 +1,5 @@
 import numpy as np
+import math
 from scipy.stats import norm
 from scipy.special import erf
 
@@ -43,9 +44,9 @@ def gaussian_eval(relaxed, concentrated):
 
     RETURN:
         V0: threshold voltage which separates relazed and concentrated data
-        false_relaxed: probability of false relaxed classification
-        false_concentrated: probability of false concentrated classification
-"""
+        c_overlap: probability of wrongly classified as relaxed given person is concentrated
+        r_overlap: probability of wrongly classified as concentrated given person is relaxed
+    """
     # calculate the meanie and std to construct the gaussian normal distributions
     r_mean = np.mean(relaxed)
     c_mean = np.mean(concentrated)
@@ -70,10 +71,5 @@ def gaussian_eval(relaxed, concentrated):
     r_overlap = (1-abs(erf(r_z)))/2
     c_z = (V0 - c_mean)/(c_std* math.sqrt(2))
     c_overlap = (1-abs(erf(c_z)))/2
-
-    # probability of false relaxed classification
-    false_relaxed = c_overlap/2
-    # probability of false concentrated classification
-    false_concentrated = r_overlap/2
     
-    return V0, false_relaxed, false_concentrated
+    return V0, c_overlap, r_overlap

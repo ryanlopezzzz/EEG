@@ -88,11 +88,11 @@ print(len(raw_data))
 times = times[:len(rms_values)]
 
 ax1.plot(times, rms_values)
-ax1.set(xlabel='RMS of Voltage (V)', ylabel='Time (s)', title='Alpha Wave Magnitude')
+ax1.set(xlabel='Time (s)', ylabel='RMS of Voltage (V)', title='Alpha Wave Magnitude')
 
 fig2, ax2 = plt.subplots()
 ax2.plot(times, raw_data)
-ax2.set(xlabel='Voltage (V)', ylabel='Time (s)', title='Raw Data')
+ax2.set(xlabel='Time (s)', ylabel='Voltage (V)', title='Raw Data')
 
 plt.show()
 input('Press <Enter> to end program')
