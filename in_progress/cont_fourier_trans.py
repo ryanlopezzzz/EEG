@@ -87,15 +87,16 @@ print(len(rms_values))
 print(len(raw_data))
 times = times[:len(rms_values)]
 
-ax1.scatter(times, rms_values)
+ax1.plot(times, rms_values)
 ax1.set(xlabel='RMS of Voltage (V)', ylabel='Time (s)', title='Alpha Wave Magnitude')
 
 fig2, ax2 = plt.subplots()
-ax2.scatter(times, raw_data)
+ax2.plot(times, raw_data)
 ax2.set(xlabel='Voltage (V)', ylabel='Time (s)', title='Raw Data')
 
-
 plt.show()
+input('Press <Enter> to end program')
+plt.close('all')
 
 
     

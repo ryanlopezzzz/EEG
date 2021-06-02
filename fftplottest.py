@@ -1,4 +1,4 @@
-ACQTIME = 10
+ACQTIME = 5
 SPS = 920 #Samples per second to collect data. Options: 128, 250, 490, 920, 1600, 2400, 3300.
 VRANGE = 6144 #Full range scale in mV. Options: 256, 512, 1024, 2048, 4096, 6144.
 nsamples = int(ACQTIME*SPS)

@@ -2,7 +2,8 @@
 Program Description:
 
 We use this data to collect brain wave data for the concentrating and relaxed state and save it with
-pickle.
+pickle. Each person gets their own folder, inside this there are separate session folders, inside each of these there is a relaxed.pickle
+and concentrated.pickle file which contain a list of the different numpy array time series.
 """
 import os
 import sys
@@ -14,7 +15,7 @@ import pickle
 from analysis_tools import get_power_spectrum, get_rms_voltage
 from Adafruit import ADS1x15
 
-ACQTIME = 1
+ACQTIME = 5
 SPS = 920 #Samples per second to collect data. Options: 128, 250, 490, 920, 1600, 2400, 3300.
 VRANGE = 6144 #Full range scale in mV. Options: 256, 512, 1024, 2048, 4096, 6144.
 nsamples = int(ACQTIME*SPS)
@@ -40,7 +41,7 @@ while True:
         
 save_folder = input('Please input folder name to make or save to:')
 save_path = os.path.join(person_name, save_folder)
-if not os.path.isdir(save_path): #Check if exp_dir is already a directory
+if not os.path.isdir(save_path): #Check if already a directory
     try:
         os.mkdir(save_path)
         print("Successfully created folders")
@@ -58,7 +59,7 @@ while True:
 if wavetype == 'r':
     exp_file = os.path.join(save_path,'relaxed.pickle')
 elif wavetype == 'c':
-    exp_file = os.path.join(save_path,'/concentrated.pickle')
+    exp_file = os.path.join(save_path,'concentrated.pickle')
 
 """
 Continue to collect brain wave data until user specifies stop
@@ -78,6 +79,9 @@ while end_program != 'y': #Loops every time user records data
         time_series[i] -= 3.3 #ADC ground is 3.3 volts above circuit ground
         while (time.perf_counter() - st) <= sinterval:
             pass
+    t = time.perf_counter() - t0    
+    adc.stopContinuousConversion()
+    print('Time elapsed: %.9f s.' % t)
     freq = np.fft.fftfreq(nsamples, d=1.0/SPS)
     ps = get_power_spectrum(time_series)
     rms = get_rms_voltage(ps, freq_min, freq_max, freq, nsamples)
