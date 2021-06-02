@@ -109,6 +109,8 @@ To apply ICA to EEG data, we assume the following
 ## Alpha Wave Data
 We built our circuit to measure Alpha waves which are from 8-12Hz. When relaxed the power of these waves should increase and when concentrating the power of these waves should decrease. To test relaxed state the user closes their eyes, to test concentrating the user opens their eyes and look at 'crazy' images.
 
+## Flappy Bird
+
 ### Lower Amplification Tests:
 
 | Relaxed | Concentrating |
@@ -144,4 +146,5 @@ We built our circuit to measure Alpha waves which are from 8-12Hz. When relaxed 
 # Reference and Acknolwedgement
 * The project owes much thanks to instructables.com/DIY-EEG-and-ECG-Circuit/. We have based our procedures and methods on the instructions in this article, but we created our own circuit design and wrote our own code for data-taking and analysis. 
 * EEG and Alpha Wave informtions are largely from Wikipedia.
-* Independent Component Analysis: http://arnauddelorme.com/ica_for_dummies/ and youtube series https://www.youtube.com/watch?v=kWAjhXr7pT4&list=PLXc9qfVbMMN2uDadxZ_OEsHjzcRtlLNxc&index=2
+* Independent Component Analysis: http://arnauddelorme.com/ica_for_dummies/; youtube series https://www.youtube.com/watch?v=kWAjhXr7pT4&list=PLXc9qfVbMMN2uDadxZ_OEsHjzcRtlLNxc&index=2; https://sccn.ucsd.edu/~jung/Site/EEG_artifact_removal.html
+* Flappy bird code reference: https://github.com/clear-code-projects/FlappyBird_Python
