@@ -84,7 +84,19 @@ This code is created to 1) find the optimal voltage threshold which separates re
 We approximate concentrated and relaxed brain wave data sets each as normal Gaussian distributions. The cross point of the two gaussians give the best threshold voltage V0 which separates relaxed and concentrated data. This voltage threhold would minimizes overall wrong classifications. The overlap area divided by 2 give the probability of wrong classification since we have two normal distributions. More specifically, the ratio of overlap area left of V0 to right of V0 gives the percentage of wrong estimation being we guessed concentrated but is actually relaxed.
 
 
-### Independent Component Analysis for Eliminating Anomalies
+### Independent Component Analysis
+Independent Component Analysis is a signal processing method to separate independent sources linearly mixed in several sensors. ICA is used for EEG to separate mixture of brain activities, as well as to eliminate artifacts embedded in the data caused by blinking, shaking head, etc. 
+
+ICA recovers a version of the original sources, by multiplying the data with an unmixing matrix: U = WX
+where X is the data with dimension (channel * time), U is the ICA source activties (components * time), and W is the ICA unmixing matrix.
+ICA separates out the independent components by finding W such to minimize the gaussianicity of each data set.
+
+To apply ICA to EEG data, we assume the following
+* Mixing is linear at electrodes
+* Propagation Delays are negligible
+* Component time courses are independent
+* Number of components are equal or less than the number of channels
+
 
 
 # Results
@@ -123,6 +135,8 @@ We built our circuit to measure Alpha waves which are from 8-12Hz. When relaxed 
 
 
 ## Future improvement
+
+
 ## Potential Application
 * Meditation Score App based on Alpha Wave
 * Child Concentration Monitor
@@ -130,3 +144,4 @@ We built our circuit to measure Alpha waves which are from 8-12Hz. When relaxed 
 # Reference and Acknolwedgement
 * The project owes much thanks to instructables.com/DIY-EEG-and-ECG-Circuit/. We have based our procedures and methods on the instructions in this article, but we created our own circuit design and wrote our own code for data-taking and analysis. 
 * EEG and Alpha Wave informtions are largely from Wikipedia.
+* Independent Component Analysis: http://arnauddelorme.com/ica_for_dummies/ and youtube series https://www.youtube.com/watch?v=kWAjhXr7pT4&list=PLXc9qfVbMMN2uDadxZ_OEsHjzcRtlLNxc&index=2
