@@ -28,11 +28,16 @@ The voltage difference oscillations between the 2nd and 3rd electrodes are the t
 * Bread board and wires
 * Open Scope MZ (Used as oscilloscope and wave generator for testing circuit only)
 
-## Circuit Design
-![](images/circuit.png)
-The above picture is the final schematic. Note that the circuit ground is 3.3V above the ADC/Rpi ground to make sure the signal is always positive because the ADC chip does not read signals that crosses 0V well. The electrode behind the ear is connected to the circuit ground. The other two electrodes are fed into the first instrumental amplifier. The instrumental amplifiers are fed with -9V to 9V of power, by connecting one 9V battery the correct way, and one backwards.
+## Wiring and Circuit Design
+Set-up Wiring:
+![](images/wiring.png)
 
-The circuit can be roughly divided into the following sections:
+Note that the circuit ground is 3.3V above the ADC/Rpi ground to make sure the signal is always positive because the ADC chip cannot read negative signals. The electrode behind the ear is connected to the 3.3V circuit ground. The other two electrodes are fed into the first instrumental amplifier. The instrumental amplifiers are fed with -9V to 9V of power with respect to the 3.3V ground, by connecting one 9V battery the correct way, and one backwards. The ADC and RPI are connected to the true ground.
+
+Circuit Schematic:
+![](images/circuit.png)
+
+The circuit consist of the following sections:
 * Instrumental Amplifier (gain ~91)
 * Notch Filter (60 HZ, gain = 1)
 * High Pass Filter (Fc = 7.2 Hz)
@@ -40,7 +45,7 @@ The circuit can be roughly divided into the following sections:
 * Instrumental Amplifier with variable gain (gain ~ 90-460)
 * Notch Filter (60 HZ, gain = 1)
 
-Individual Sections are discussed further below.
+Individual Section are discussed further below.
 
 ### Instrumental Amplifier (gain ~91)
 <img src="images/circuit1.png" width=400>
