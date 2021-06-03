@@ -127,13 +127,13 @@ We built our circuit to measure Alpha waves which are from 8-12Hz. When relaxed 
 
 # Next Step
 ## Remaining issues
-* Electrode placement needs to be pin-pointed and quite exact
+* Accurate positioning of electrodes plays an fundamental role in good EEG data acquisition.  needs to be pin-pointed and quite exact
 
 
 ## Future improvement
 ### Artefact Removal Using Independent Component Analysis
 
-The circuit has already shown success in filtering out noise in a wide frequency range (caused by skin, power line, etc). However, it is still subject to artefact signals unrelated to the brain waves of interest. The method we would like to experiment in the future is independent component analysis (ICA). It has shown to be a robust method used for EEG in field as well as in research to separate mixture of brain activities, as well as to eliminate artifacts embedded in the data caused by blinking, shaking head, etc.
+The circuit has already shown success in filtering out noise in a wide frequency range (caused by skin, power line, etc). However, it is still subject to artefact signals unrelated to the brain waves of interest. The method we would like to experiment in the future is independent component analysis (ICA). It has shown to be a robust method used for EEG in field as well as in research to separate mixture of brain activities, as well as to eliminate contamination of signals by eye movements, blinks, muscle, heart and line noise.
 
 ICA is a signal processing method to separate independent sources linearly mixed in several sensors. ICA recovers a version of the original sources, by multiplying the data with an unmixing matrix: U = WX, where X is the data with dimension (channel * time), U is the ICA source activties (components * time), and W is the ICA unmixing matrix.
 ICA separates out the independent components by finding W such to minimize the gaussianicity of each data set.
