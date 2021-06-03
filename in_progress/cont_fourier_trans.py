@@ -59,8 +59,6 @@ rms_values = []
 input('Press <Enter> to start %.1f s data acquisition...' % exptime)
 print()
 
-adc.startContinuousDifferentialConversion(2, 3, pga=VRANGE, sps=sps) #Returns the voltage difference in millivolts between port 2 and 3 on the ADC.
-
 t_start = time.perf_counter()
 while (time.perf_counter() - t_start < exptime):
     t0 = time.perf_counter()
@@ -97,11 +95,3 @@ ax2.set(xlabel='Time (s)', ylabel='Voltage (V)', title='Raw Data')
 plt.show()
 input('Press <Enter> to end program')
 plt.close('all')
-
-
-    
-    
-    
-    
-    
-    
