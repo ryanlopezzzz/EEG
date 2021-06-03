@@ -3,9 +3,9 @@ This project builds an EEG circuit which will allow the user to send morse code 
 
 ## EEG Crash Course
 EEG stands for electroencephalogram. It measures voltage fluctuations resulting from ionic current within the neurons of the brain. 
-Neurons exchange ions with environment and when many ions are pushed out of many neurons at the same time, they repel and push each other forming a wave. The waves reachs scalp and can be captured by the electrodes. Note that EEG does not capture the activities of single neurons-the electric potential is way to small to be captured. Instead, EEG measures the voltage difference in 2 electrodes over time, which reflect synchronized activity over a network of neurons. Spatially well-aligned neurons fire together, so the electrode placements need to be in specific regions to observe oscillations/waves of interest. These waves have different characteristic frequency, magnitude, and are related to different brain activties. 
+Neurons exchange ions with environment and when many ions are pushed out of many neurons at the same time, they repel and push each other forming a wave. The waves reaches scalp and can be captured by the electrodes. Note that EEG does not capture the activities of single neurons-the electric potential is way to small to be captured. Instead, EEG measures the voltage difference in 2 electrodes over time, which reflect synchronized activity over a network of neurons. Spatially well-aligned neurons fire together, so the electrode placements need to be in specific regions to observe oscillations/waves of interest. These waves have different characteristic frequency, magnitude, and are related to different brain activties. 
 
-In our project, we measure alpha waves originating from the occipital lobe because they are one of the strongest EEG signals. Alpha waves have a signature frequency in the range of 8-12 HZ. Alpha waves are reduced with open eyes, drowsiness, and sleep. It is still under study but main stream research shows it represent the activity of the visual cortex in an idle state. Our circuit also has the capacity to measure beta waves (12-30 HZ).
+In our project, we measure alpha waves originating from the occipital lobe because they are one of the strongest EEG signals. Alpha waves have a signature frequency in the range of 8-12 HZ. Alpha waves are reduced with open eyes, drowsiness, and sleep. It is still under study but main stream research shows it represent the activity of the visual cortex in an idle state. In theory, our circuit also has the capacity to measure beta waves (12-30 HZ).
 
 # Methods
 
@@ -19,7 +19,7 @@ The voltage difference oscillations between the 2nd and 3rd electrodes are the t
 ## List of Components
 * Raspberry Pi 4
 * [TDE-2143-C EEG Gold Cup Electrodes](http://www.discountdisposables.com/index.php?act=viewProd&productId=16)
-* Electrode gel, tape, bandana
+* Electrode gel, tape
 * [Instrumental Amplifier AD622ANZ](https://www.analog.com/media/en/technical-documentation/data-sheets/AD622.pdf)
 * [Quad Operational Amplifier TL084x](https://www.ti.com/lit/ds/symlink/tl081a.pdf?HQS=dis-dk-null-digikeymode-dsf-pf-null-wwe&ts=1619312373475&ref_url=https%253A%252F%252Fwww.digikey.ca%252F)
 * Potentiometer CT6EW102-ND, 1kOhm
@@ -31,7 +31,8 @@ The voltage difference oscillations between the 2nd and 3rd electrodes are the t
 ## Wiring
 ![](images/Wiring.png)
 
-Note that the circuit ground is 3.3V above the ADC/Rpi ground to make sure the signal is always positive because the ADC chip cannot read negative signals. The electrode behind the ear is connected to the 3.3V circuit ground. The other two electrodes are fed into the first instrumental amplifier. The instrumental amplifiers are fed with -9V to 9V of power with respect to the 3.3V ground, by connecting one 9V battery the correct way, and one backwards. The ADC and RPI are connected to the true ground.
+The above diagram describes the complete EEG setup from electrode placement on the scalp to the data reading on the Raspberry Pi.
+Note that the circuit/head ground is 3.3V above the ADC/Rpi ground to make sure the signal is always positive because the ADC chip struggles to read negative signals. The electrode behind the ear is connected to the 3.3V circuit ground. The other two electrodes are fed into the first instrumental amplifier. The instrumental amplifiers are fed with -9V to 9V of power with respect to the 3.3V ground, by connecting one 9V battery the correct way, and one backwards. The ADC and RPI are connected to the true ground.
 
 ## Circuit Schematic
 ![](images/circuit.png)
@@ -39,8 +40,8 @@ Note that the circuit ground is 3.3V above the ADC/Rpi ground to make sure the s
 The circuit consist of the following sections:
 * Instrumental Amplifier (gain ~91)
 * Notch Filter (60 HZ, gain = 1)
-* High Pass Filter (Fc = 7.2 Hz)
-* Low Pass Filter (Fc = 32.9 Hz)
+* High Pass Filter (Fc = 7.2 Hz, gain = 1)
+* Low Pass Filter (Fc = 32.9 Hz, gain = 1)
 * Instrumental Amplifier with variable gain (gain ~ 90-460)
 * Notch Filter (60 HZ, gain = 1)
 
@@ -48,8 +49,8 @@ Individual Section are discussed further below.
 
 ### Instrumental Amplifier (gain ~91)
 <img src="images/circuit1.png" width=400>
-Alpha wave signals is 15-50 uV so we need a lot of amplification in the circuit. 
-An instrumentation amplifier takes as its inputs 2 voltages, and outputs the difference between the two multiplied by some gain given by: G = 1 + (50.5 kOhm)/R, where R is the total resistance between pin 1 and 8. Note it is possible to make home-made instrumentation amplifier usually with 3 op-amps. However, it suffers from a low CMRR unless precision resitors are used.
+Alpha wave signals is 15-50 uV so we need a lot of amplification in the circuit. (LETS CITE INFORMATION)
+An instrumentation amplifier takes as its inputs, 2 voltages, and outputs the difference between the two multiplied by some gain given by: G = 1 + (50.5 kOhm)/R, where R is the total resistance between pin 1 and 8. Note it is possible to make home-made instrumentation amplifier usually with 3 op-amps. However, it suffers from a low CMRR unless precision resitors are used. (CITE DIY)
 
 ### 1st Notch Filter (60 HZ, gain = 1)
 <img src="images/circuit2.png" width=600>
@@ -59,13 +60,19 @@ The biggest source of noise in our system is centered at 60 Hz due to power line
 
 The notch frequency is given by f = 1/(2 PI R C) where R = R3 = R5. The other two resistor values are related to the quality factor of the filter, which determines how sharp the attenuation is.
 
+* [More information on notch filters](https://www.electronicshub.org/band-stop-filter/)
+
 ### High Pass Filter (Fc = 7.2 Hz)
 <img src="images/circuit3.png" width=600>
-The high pass filter intends to filter out frequencies corresponding to galvanic skin response across our head. This interference is primarily low frequency. A second order filter design is used here and is shown to be necessary for noise reduction. 
+The high pass filter intends to filter out frequencies corresponding to galvanic skin response across our head. This interference is primarily low frequency. A second order active filter design is used here and is shown to be necessary for noise reduction. 
+
+* [More information on second order filters](https://www.electronics-tutorials.ws/filter/second-order-filters.html)
 
 ### Low Pass Filter (Fc = 32.9 Hz)
 <img src="images/circuit4.png" width=600>
 The EEG waves of interest to our project are alpha (8-12 HZ) and beta waves (12-30 HZ). Thus, we are not interested in frequency > 30HZ and filter them out. A second order filter design is used.
+
+* [More information on second order filters](https://www.electronics-tutorials.ws/filter/second-order-filters.html)
 
 ### Instrumental Amplifier with variable gain (gain ~ 90-460)
 <img src="images/circuit5.png" width=400>
@@ -76,7 +83,11 @@ To adjust the potentiometer, start taking readings and make sure one is not movi
 
 ### 2nd Notch Filter (60 HZ, gain = 1)
 <img src="images/circuit6.png" width=600>
-Another 60 HZ is necessary at the end of the circuit since the power line interferences seep into the circuit through prior steps. 
+Another 60 HZ is necessary at the end of the circuit since the power line interferences seep into the circuit through prior steps. This is the exact copy of the 1st notch filter
+
+### Connecting ADC to Rpi
+
+Supply the ADC chip with 5V from Rpi to ensure the maximum input voltage range possible. The pin configuration and connection in the image above is correct, but it is reccomended to double check the connection, because wiring mistakes can lead to damaging the chip and or the Rpi.
 
 ## Post-processing (LINK THE CODE IN GITHUB TO EACH RELEVANT SECTION)
 ### Data Taking Methods
