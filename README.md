@@ -133,7 +133,6 @@ We built our circuit to measure Alpha waves which are from 8-12Hz. When relaxed 
 ## Future improvement
 ### Artefact Removal Using Independent Component Analysis
 
-### Independent Component Analysis
 The circuit has already shown success in filtering out noise in a wide frequency range (caused by skin, power line, etc). However, it is still subject to artefact signals unrelated to the brain waves of interest. The method we would like to experiment in the future is independent component analysis (ICA). It has shown to be a robust method used for EEG in field as well as in research to separate mixture of brain activities, as well as to eliminate artifacts embedded in the data caused by blinking, shaking head, etc.
 
 ICA is a signal processing method to separate independent sources linearly mixed in several sensors. ICA recovers a version of the original sources, by multiplying the data with an unmixing matrix: U = WX, where X is the data with dimension (channel * time), U is the ICA source activties (components * time), and W is the ICA unmixing matrix.
