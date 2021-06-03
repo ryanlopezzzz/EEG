@@ -28,11 +28,15 @@ The voltage difference oscillations between the 2nd and 3rd electrodes are the t
 * Bread board and wires
 * Open Scope MZ (Used as oscilloscope and wave generator for testing circuit only)
 
-## Circuit Design
-![](images/circuit.png)
-The above picture is the final schematic. Note that the circuit ground is 3.3V above the ADC/Rpi ground to make sure the signal is always positive because the ADC chip does not read signals that crosses 0V well. The electrode behind the ear is connected to the circuit ground. The other two electrodes are fed into the first instrumental amplifier. The instrumental amplifiers are fed with -9V to 9V of power, by connecting one 9V battery the correct way, and one backwards.
+## Wiring
+![](images/Wiring.png)
 
-The circuit can be roughly divided into the following sections:
+Note that the circuit ground is 3.3V above the ADC/Rpi ground to make sure the signal is always positive because the ADC chip cannot read negative signals. The electrode behind the ear is connected to the 3.3V circuit ground. The other two electrodes are fed into the first instrumental amplifier. The instrumental amplifiers are fed with -9V to 9V of power with respect to the 3.3V ground, by connecting one 9V battery the correct way, and one backwards. The ADC and RPI are connected to the true ground.
+
+## Circuit Schematic
+![](images/circuit.png)
+
+The circuit consist of the following sections:
 * Instrumental Amplifier (gain ~91)
 * Notch Filter (60 HZ, gain = 1)
 * High Pass Filter (Fc = 7.2 Hz)
@@ -40,7 +44,7 @@ The circuit can be roughly divided into the following sections:
 * Instrumental Amplifier with variable gain (gain ~ 90-460)
 * Notch Filter (60 HZ, gain = 1)
 
-Individual Sections are discussed further below.
+Individual Section are discussed further below.
 
 ### Instrumental Amplifier (gain ~91)
 <img src="images/circuit1.png" width=400>
@@ -76,27 +80,17 @@ Another 60 HZ is necessary at the end of the circuit since the power line interf
 
 ## Post-processing (LINK THE CODE IN GITHUB TO EACH RELEVANT SECTION)
 ### Data Taking Methods
+
+### Digital Filtering
+
+
+
 ### Gaussian Analysis and Voltage Threshold 
 [Gaussian_eval.py](link later)
 
 This code is created to 1) find the optimal voltage threshold which separates relaxed and concentrated data and 2) Evaluate how distinct the relaxed and concentrated datasets using statistical analysis.
 
 We approximate concentrated and relaxed brain wave data sets each as normal Gaussian distributions. The cross point of the two gaussians give the best threshold voltage V0 which separates relaxed and concentrated data. This voltage threhold would minimizes overall wrong classifications. The overlap area divided by 2 give the probability of wrong classification since we have two normal distributions. More specifically, the ratio of overlap area left of V0 to right of V0 gives the percentage of wrong estimation being we guessed concentrated but is actually relaxed.
-
-
-### Independent Component Analysis
-Independent Component Analysis is a signal processing method to separate independent sources linearly mixed in several sensors. ICA is used for EEG to separate mixture of brain activities, as well as to eliminate artifacts embedded in the data caused by blinking, shaking head, etc. 
-
-ICA recovers a version of the original sources, by multiplying the data with an unmixing matrix: U = WX
-where X is the data with dimension (channel * time), U is the ICA source activties (components * time), and W is the ICA unmixing matrix.
-ICA separates out the independent components by finding W such to minimize the gaussianicity of each data set.
-
-To apply ICA to EEG data, we assume the following
-* Mixing is linear at electrodes
-* Propagation Delays are negligible
-* Component time courses are independent
-* Number of components are equal or less than the number of channels
-
 
 
 # Results
@@ -133,10 +127,22 @@ We built our circuit to measure Alpha waves which are from 8-12Hz. When relaxed 
 
 # Next Step
 ## Remaining issues
-* Electrode placement needs to be pin-pointed and quite exact
+* Accurate positioning of electrodes plays an fundamental role in good EEG data acquisition.  needs to be pin-pointed and quite exact
 
 
 ## Future improvement
+### Artefact Removal Using Independent Component Analysis
+
+The circuit has already shown success in filtering out noise in a wide frequency range (caused by skin, power line, etc). However, it is still subject to artefact signals unrelated to the brain waves of interest. The method we would like to experiment in the future is independent component analysis (ICA). It has shown to be a robust method used for EEG in field as well as in research to separate mixture of brain activities, as well as to eliminate contamination of signals by eye movements, blinks, muscle, heart and line noise.
+
+ICA is a signal processing method to separate independent sources linearly mixed in several sensors. ICA recovers a version of the original sources, by multiplying the data with an unmixing matrix: U = WX, where X is the data with dimension (channel * time), U is the ICA source activties (components * time), and W is the ICA unmixing matrix.
+ICA separates out the independent components by finding W such to minimize the gaussianicity of each data set.
+
+To apply ICA to EEG data, we assume the following
+* Mixing is linear at electrodes
+* Propagation Delays are negligible
+* Component time courses are independent
+* Number of components are equal or less than the number of channels
 
 
 ## Potential Application
