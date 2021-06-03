@@ -107,20 +107,6 @@ We approximate concentrated and relaxed brain wave data sets each as normal Gaus
 
 ## Alpha Wave Data
 (RYAN PLOT THE IMAGES)
-
-
-# Applications
-
-## EEG Bird (inspired by Flappy Bird) - Ruining
-This program is inspired by the game Flappy Bird, but with several rule changes so that it can be adapted to EEG. Firstly, there is no "gravity" that makes the bird fall. Secondly, instead of clicking at the screen to give bird a boost up, the bird's y coordinate has a direct relation with the EEG signal. To achieve this, we ask the user to record 10 seconds each of pure concentrated and relaxed data, so that we can calibrate the top screen of the game to concentrated voltage level, and bottom screen of the game to relaxed voltage level. This calibration is very necessary since EEG signal vary from person to person, and we also have an adjustable gain section in the circuit. To stablize the height of the bird, we also does a rms calculation over the last 3 seconds of data and use the rms as the height of the bird. There are a number parameters one can adjust in the beginning of the program to adjust the difficulty of the game play, such as the separation of the top pipe and bottom pipe, the rate ground moves to the left, etc. The program is plotted in pygame and is modified from https://github.com/clear-code-projects/FlappyBird_Python.
-
-## Morse Code - Ryan
-
-## Child Concentration Monitor - Hak
-
-
-
-
 ### Lower Amplification Tests:
 
 | Relaxed | Concentrating |
@@ -140,6 +126,16 @@ This program is inspired by the game Flappy Bird, but with several rule changes 
 | 5,077 | 39, 640 |
 |11,051 | 55,365 |
 | 5,748 | 32,897 |
+
+# Applications
+
+## EEG Bird (inspired by Flappy Bird) - Ruining
+This program is inspired by the game Flappy Bird, but with several rule changes so that it can be adapted to EEG. Firstly, there is no "gravity" that makes the bird fall. Secondly, instead of clicking at the screen to give bird a boost up, the bird's y coordinate has a direct relation with the EEG signal. To achieve this, we ask the user to record 10 seconds each of pure concentrated and relaxed data, so that we can calibrate the top screen of the game to concentrated voltage level, and bottom screen of the game to relaxed voltage level. This calibration is very necessary since EEG signal vary from person to person, and we also have an adjustable gain section in the circuit. To stablize the height of the bird, we also does a rms calculation over the last 3 seconds of data and use the rms as the height of the bird. There are a number parameters one can adjust in the beginning of the program to adjust the difficulty of the game play, such as the separation of the top pipe and bottom pipe, the rate ground moves to the left, etc. The program is plotted in pygame and is modified from https://github.com/clear-code-projects/FlappyBird_Python.
+
+## Morse Code - Ryan
+
+## Child Concentration Monitor - Hak
+
 
 # Next Step
 
