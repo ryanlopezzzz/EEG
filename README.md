@@ -27,15 +27,21 @@ The voltage difference oscillations between the 2nd and 3rd electrodes are the t
 * two 9V batteries
 * Bread board and wires
 * Open Scope MZ (Used as oscilloscope and wave generator for testing circuit only)
+* ADDDDDDDDD ADC!!!!!
 
 ## Wiring
 ![](images/Wiring.png)
+
+The above diagram describes the complete EEG setup. The user tapes 3 electrodes to their scalp at various locations to measure the brain's electrical signals. These elcetrodes are attached to the circuit, which serves to amplify alpha waves and filter out other signals. The voltage output of the circuit is measured with the ADC and the data is sent to the Rpi. The Rpi applies further digital filtering and outputs the voltage of the user's alpha waves.
+
+Note that we have two different grounds; the ADC and Rpi ground (black) at 0V, and the circuit ground (pink) at 3.3V. This design choice is due to ADC input voltage limitations and is explained in detail later. To get the -9V to 9V of power with respect to the 3.3V ground, connect one 9V battery the correct way, and the other one backwards.
 
 The above diagram describes the complete EEG setup from electrode placement on the scalp to the data reading on the Raspberry Pi.
 Note that the circuit/head ground is 3.3V above the ADC/Rpi ground to make sure the signal is always positive because the ADC chip struggles to read negative signals. The electrode behind the ear is connected to the 3.3V circuit ground. The other two electrodes are fed into the first instrumental amplifier. The instrumental amplifiers are fed with -9V to 9V of power with respect to the 3.3V ground, by connecting one 9V battery the correct way, and one backwards. The ADC and RPI are connected to the true ground.
 
 ## Circuit Schematic
 ![](images/circuit.png)
+<img src="testing_circuit/figures/circuit_dB.png" width=475> <img src="testing_circuit/figures/circuit_VG.png" width=475>
 
 The circuit consist of the following sections:
 * Instrumental Amplifier (gain ~91)
@@ -53,7 +59,8 @@ Alpha wave signals is 15-50 uV so we need a lot of amplification in the circuit.
 An instrumentation amplifier takes as its inputs, 2 voltages, and outputs the difference between the two multiplied by some gain given by: G = 1 + (50.5 kOhm)/R, where R is the total resistance between pin 1 and 8. Note it is possible to make home-made instrumentation amplifier usually with 3 op-amps. However, it suffers from a low CMRR unless precision resitors are used. (CITE DIY)
 
 ### 1st Notch Filter (60 HZ, gain = 1)
-<img src="images/circuit2.png" width=600>
+<img src="images/circuit2.png" width=475> <img src="testing_circuit/figures/notch1_dB.png" width=475>
+
 The biggest source of noise in our system is centered at 60 Hz due to power line interference. This noise is present even though we use batteries to power the circuit. Thus we have 2 notch filters in the circuit (filters that have a severe reduction of gain around 1 particular frequency). The first notch filter intends to filter out interference before more gains are applied. 
 
 * [More readings on PLI in biopotentials applications](https://www.intechopen.com/books/compendium-of-new-techniques-in-harmonic-analysis/cancelling-harmonic-power-line-interference-in-biopotentials)
@@ -63,26 +70,29 @@ The notch frequency is given by f = 1/(2 PI R C) where R = R3 = R5. The other tw
 * [More information on notch filters](https://www.electronicshub.org/band-stop-filter/)
 
 ### High Pass Filter (Fc = 7.2 Hz)
-<img src="images/circuit3.png" width=600>
+<img src="images/circuit3.png" width=475> <img src="testing_circuit/figures/hp_dB.png" width=475>
+
 The high pass filter intends to filter out frequencies corresponding to galvanic skin response across our head. This interference is primarily low frequency. A second order active filter design is used here and is shown to be necessary for noise reduction. 
 
 * [More information on second order filters](https://www.electronics-tutorials.ws/filter/second-order-filters.html)
 
 ### Low Pass Filter (Fc = 32.9 Hz)
-<img src="images/circuit4.png" width=600>
+<img src="images/circuit4.png" width=475> <img src="testing_circuit/figures/lp_dB.png" width=475>
+
 The EEG waves of interest to our project are alpha (8-12 HZ) and beta waves (12-30 HZ). Thus, we are not interested in frequency > 30HZ and filter them out. A second order filter design is used.
 
 * [More information on second order filters](https://www.electronics-tutorials.ws/filter/second-order-filters.html)
 
 ### Instrumental Amplifier with variable gain (gain ~ 90-460)
-<img src="images/circuit5.png" width=400>
+<img src="images/circuit5.png" width=400> 
 
 This 90-460 gain is on top of the 90x gain from the first instrumentation amplifier. Alpha wave amplitude varies from person to person, from about 10 to 30 uV. Using a middle value of 20 uV, this means the ending voltage reading could range from 90*90*20e-6 = 0.162V to 460*90*20e-6 = 0.828V. The variable gain is achieved by putting resitors in series and in parallel. The gain is roughly in the range of 90-460, which corresponds to potentiometer value 1k (maximum) to 0 (minimum).
 
 To adjust the potentiometer, start taking readings and make sure one is not moving at all. Make sure voltages don't fluctuate offscreen, but avoid making it too small because then the errors incurred from digitally reading the data into rpi would be relatively increased. 
 
 ### 2nd Notch Filter (60 HZ, gain = 1)
-<img src="images/circuit6.png" width=600>
+<img src="images/circuit6.png" width=475> <img src="testing_circuit/figures/notch2_dB.png" width=475>
+
 Another 60 HZ is necessary at the end of the circuit since the power line interferences seep into the circuit through prior steps. This is the exact copy of the 1st notch filter
 
 ### Connecting ADC to Rpi
