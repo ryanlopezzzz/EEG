@@ -1,4 +1,4 @@
-# Project Description (under construction) 
+# Project Description (CHANGE) 
 This project builds an EEG circuit which will allow the user to send morse code to a computer through their brain wave activity. It is a basic form of “mind reading” and has applications in helping paralyzed people who can not speak or write. The circuit amplifies electrical signals from the brain and uses various high and low pass analog filters. We then post-process the data using digital filters, statistical methods, and Single Component analysis. We hope to demonstrate the successful communication of words in a timely manner through brainwave data. The biggest challenge is that an EEG which measures voltage differences across your scalp can produce noisy and sometimes unreliable signals, so careful filtering and project design must be done. Our general approach is to distinguish between two mental states with the EEG, whether a person is relaxed (alpha waves, 8-12Hz) or if they are concentrating / alert (beta waves, 12-30Hz). The user can then switch between these two mental states over time signaling a beep or no beep to communicate in morse code. We will use the following link as a starting point (found on instructables.com/DIY-EEG-and-ECG-Circuit/). 
 
 ## EEG Crash Course
@@ -79,13 +79,13 @@ To adjust the potentiometer, start taking readings and make sure one is not movi
 Another 60 HZ is necessary at the end of the circuit since the power line interferences seep into the circuit through prior steps. 
 
 ## Post-processing (LINK THE CODE IN GITHUB TO EACH RELEVANT SECTION)
-### Data Taking Methods
+### Data Taking Methods (RYAN)
 
-### Digital Filtering
+### Digital Filtering (RYAN)
+Inverse forier and power calculation within frequency range 8-12 HZ
 
 
-
-### Gaussian Analysis and Voltage Threshold 
+### Gaussian Analysis and Voltage Threshold Determination
 [Gaussian_eval.py](link later)
 
 This code is created to 1) find the optimal voltage threshold which separates relaxed and concentrated data and 2) Evaluate how distinct the relaxed and concentrated datasets using statistical analysis.
@@ -98,12 +98,21 @@ We approximate concentrated and relaxed brain wave data sets each as normal Gaus
 ## Filter Performance
 <img src="testing_circuit/figures/circuit_VG.png" width=600>
 <img src="testing_circuit/figures/circuit_dB.png" width=600>
+(RYAN)
 (EXPLAIN DB AND TALK ABOUT THE NECESSARY LEVEL OF NOISE ATTENUATION TO SEE BRAIN WAVE DATA)
 
 ## Alpha Wave Data
-We built our circuit to measure Alpha waves which are from 8-12Hz. When relaxed the power of these waves should increase and when concentrating the power of these waves should decrease. To test relaxed state the user closes their eyes, to test concentrating the user opens their eyes and look at 'crazy' images.
+(RYAN PLOT THE IMAGES)
 
-## Flappy Bird
+
+## EEG Bird (inspired by Flappy Bird)
+This program is inspired by the game Flappy Bird, but with several rule changes so that it can be adapted to EEG. Firstly, there is no "gravity" that makes the bird fall. Secondly, instead of clicking at the screen to give bird a boost up, the bird's y coordinate has a direct relation with the EEG signal. To achieve this, we ask the user to record 10 seconds each of pure concentrated and relaxed data, so that we can calibrate the top screen of the game to concentrated voltage level, and bottom screen of the game to relaxed voltage level. This calibration is very necessary since EEG signal vary from person to person, and we also have an adjustable gain section in the circuit. To stablize the height of the bird, we also does a rms calculation over the last 3 seconds of data and use the rms as the height of the bird. There are a number parameters one can adjust in the beginning of the program to adjust the difficulty of the game play, such as the separation of the top pipe and bottom pipe, the rate ground moves to the left, etc. The program is plotted in pygame and is modified from https://github.com/clear-code-projects/FlappyBird_Python.
+
+# Debugging Tips (RYAN)
+* 
+
+
+
 
 ### Lower Amplification Tests:
 
@@ -126,14 +135,11 @@ We built our circuit to measure Alpha waves which are from 8-12Hz. When relaxed 
 | 5,748 | 32,897 |
 
 # Next Step
-## Remaining issues
-* Accurate positioning of electrodes plays an fundamental role in good EEG data acquisition.  needs to be pin-pointed and quite exact
-
 
 ## Future improvement
-### Artefact Removal Using Independent Component Analysis
 
-The circuit has already shown success in filtering out noise in a wide frequency range (caused by skin, power line, etc). However, it is still subject to artefact signals unrelated to the brain waves of interest. The method we would like to experiment in the future is independent component analysis (ICA). It has shown to be a robust method used for EEG in field as well as in research to separate mixture of brain activities, as well as to eliminate contamination of signals by eye movements, blinks, muscle, heart and line noise.
+### Artifact Removal Using Independent Component Analysis
+The circuit has already shown success in filtering out noise in a wide frequency range (caused by skin, power line, etc). However, it is still subject to artifact signals unrelated to the brain waves of interest. The method we would like to experiment in the future is independent component analysis (ICA). It has shown to be a robust method used for EEG in field as well as in research to separate mixture of brain activities, as well as to eliminate contamination of signals by eye movements, blinks, muscle, heart and line noise.
 
 ICA is a signal processing method to separate independent sources linearly mixed in several sensors. ICA recovers a version of the original sources, by multiplying the data with an unmixing matrix: U = WX, where X is the data with dimension (channel * time), U is the ICA source activties (components * time), and W is the ICA unmixing matrix.
 ICA separates out the independent components by finding W such to minimize the gaussianicity of each data set.
@@ -144,13 +150,27 @@ To apply ICA to EEG data, we assume the following
 * Component time courses are independent
 * Number of components are equal or less than the number of channels
 
+The last condition poses a limitation to using ICA in our current project since the current circuit only takes in 3 electrode channel, one of which is ground. In order to implement ICA, we need to accomodate for more electrode data.
+
+### Beta Wave
+Our current circuit design has the capacity to measure beta wave (12-30 HZ). 
+
+Description of beta wave from http://www.csun.edu/~vcpsy00i/dissfa01/xEEG_lesson.html:
+"Beta rhythms occur in individuals who are alert and attentive to external stimuli or exert specific mental effort, or paradoxically, beta rhythms also occur during deep sleep, REM (Rapid Eye Movement) sleep when the eyes switch back and forth. Notice that the amplitude of beta rhythms tends to be lower than for alpha rhythms. This does not mean that there is less electrical activity, rather that the "positive" and "negative" activities are starting to counterbalance so that the sum of the electrical activity is less. Thus, instead of getting the wave-like synchronized pattern of alpha waves, desynchronization or alpha block occurs. So, the beta wave represents arousal of the cortex to a higher state of alertness or tension. It may also be associated with "remembering" or retrieving memories." (There are interesting facts about other brain waves on this website as well.)
+
+### Robust Electrode Headset
+Accurate positioning of electrodes plays an important role in good EEG data acquisition. There are several things we can improve:
+* We need to find a more systematic method to pin point the electrode placement locations
+* We need to use things more robust than just tape
 
 ## Potential Application
 * Meditation Score App based on Alpha Wave
-* Child Concentration Monitor
+* Child Concentration Monitor for strict parents ;)
+* Prosthetic limbs
+* Communication device
 
 # Reference and Acknolwedgement
 * The project owes much thanks to instructables.com/DIY-EEG-and-ECG-Circuit/. We have based our procedures and methods on the instructions in this article, but we created our own circuit design and wrote our own code for data-taking and analysis. 
-* EEG and Alpha Wave informtions are largely from Wikipedia.
 * Independent Component Analysis: http://arnauddelorme.com/ica_for_dummies/; youtube series https://www.youtube.com/watch?v=kWAjhXr7pT4&list=PLXc9qfVbMMN2uDadxZ_OEsHjzcRtlLNxc&index=2; https://sccn.ucsd.edu/~jung/Site/EEG_artifact_removal.html
 * Flappy bird code reference: https://github.com/clear-code-projects/FlappyBird_Python
+* EEG and Alpha Wave informtions are mainly from Wikipedia, and http://www.csun.edu/~vcpsy00i/dissfa01/xEEG_lesson.html.
