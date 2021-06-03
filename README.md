@@ -30,7 +30,7 @@ The voltage difference oscillations between the 2nd and 3rd electrodes are the t
 
 ## Wiring and Circuit Design
 Set-up Wiring:
-![](images/wiring.png)
+![](images/Wiring.png)
 
 Note that the circuit ground is 3.3V above the ADC/Rpi ground to make sure the signal is always positive because the ADC chip cannot read negative signals. The electrode behind the ear is connected to the 3.3V circuit ground. The other two electrodes are fed into the first instrumental amplifier. The instrumental amplifiers are fed with -9V to 9V of power with respect to the 3.3V ground, by connecting one 9V battery the correct way, and one backwards. The ADC and RPI are connected to the true ground.
 
