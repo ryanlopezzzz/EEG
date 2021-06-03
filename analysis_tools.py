@@ -32,6 +32,18 @@ def get_rms_voltage(ps, freq_min, freq_max, freq, time_series_len):
     rms = (1/time_series_len) * np.sqrt(np.sum(ps_in_range))
     return rms
 
+def get_brain_wave(time_series, freq_min, freq_max, freq):
+    """
+    Eliminates the components of time_series which have frequency above freq_max or below freq_min giving
+    brain waves.
+    """
+    time_series_fft = np.fft.fft(time_series)
+    freq_abs = np.abs(freq)
+    time_series_fft[(freq_abs > freq_max) | (freq_abs < freq_min)] = 0 #set frequencies outside of [freq_min,freq_max] to 0
+    brain_wave_complex = np.fft.ifft(time_series_fft)
+    brain_wave = np.real(brain_wave_complex) #get rid of zero imaginary component
+    return brain_wave
+
 def gaussian_eval(relaxed, concentrated):
     """
     We approximate concentrated and relaxed brain wave data sets each as normal Gaussian distributions.

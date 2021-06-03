@@ -73,7 +73,7 @@ ln, = plt.plot([],[],'ro')
 t_start = time.perf_counter()
 
 ani = FuncAnimation(fig, update_plot, frames=np.linspace(0,measuretime, measuretime*sps),
-                    interval = 0, repeat=False,init_func=init_plot, blit=True)
+                    interval = 0, repeat=False, init_func=init_plot, blit=True)
 plt.show()
 """
 while (time.perf_counter() - t_start < measuretime):

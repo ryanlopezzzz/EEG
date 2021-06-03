@@ -12,7 +12,7 @@ import time
 import numpy as np
 import matplotlib.pyplot as plt
 import pickle
-from analysis_tools import get_power_spectrum, get_rms_voltage
+from analysis_tools import get_power_spectrum, get_rms_voltage, get_brain_wave
 from Adafruit import ADS1x15
 
 ACQTIME = 5
@@ -98,6 +98,12 @@ while end_program != 'y': #Loops every time user records data
     ax2.plot(freq, ps)
     ax2.set(xlabel='Frequency (Hz)', ylabel='Power Spectrum', title='Power Spectrum of FFT')    
     f2.show()
+    
+    f3, ax3 =plt.subplots()
+    brain_wave = get_brain_wave(time_series,freq_min,freq_max,freq)
+    ax3.plot(times, time_series)
+    ax3.set(xlabel='Time (s)', ylabel='Voltage', title='Brain Alpha Wave')    
+    f3.show()
     
     while True:
         save = input('Save this last run? (y/n)')
