@@ -18,7 +18,7 @@ import numpy as np
 from scipy.stats import norm
 import matplotlib.pyplot as plt
 import pickle
-from analysis_tools import get_power_spectrum, get_rms_voltage, gaussian_eval
+from analysis_tools import get_power_spectrum, get_rms_voltage, gaussian_eval, get_brain_wave
 
 #These values should match saved data being loaded
 ACQTIME = 5
@@ -27,6 +27,7 @@ nsamples = int(ACQTIME*SPS)
 sinterval = 1.0/SPS
 freq_min = 8 #min freq of alpha waves
 freq_max = 12 #max freq of alpha waves
+freq = np.fft.fftfreq(nsamples, d=1.0/SPS)
 
 """
 Asks user where to locate data
@@ -86,7 +87,7 @@ c_std = np.std(concentrated_rms)
 xpoints = np.linspace(c_mean-4*c_std, r_mean+4*r_std, 1000)
 
 """
-Plots results
+Plots results of gaussian analysis
 """
 fig, ax = plt.subplots()
 ax.hist(relaxed_rms, bins=6, density=True, label='Relaxed')
@@ -96,13 +97,39 @@ ax.plot(xpoints, norm.pdf(xpoints, c_mean, c_std), linestyle='--', color='green'
 plt.axvline(V0, color='purple', linestyle='--', label='Cutoff Voltage')
 ax.set(xlabel='RMS Alpha Wave Voltage (V)', ylabel='Frequency', title='Concentrated / Relaxed EEG Data')
 ax.legend()
-plt.show()
 
+"""
+Calculates power spectrum and true brain wave of the first relaxed and concentrated state then plots them all
+"""
 view_relaxed = relaxed_data[0]
-view_concentrate = concentrated_data[0]
+ps_relaxed = get_power_spectrum(view_relaxed)
+view_concentrated = concentrated_data[0]
+ps_concentrated = get_power_spectrum(view_concentrated)
+brain_relaxed = get_brain_wave(view_relaxed, 8, 12, freq)
+brain_concentrated = get_brain_wave(view_concentrated, 8, 12, freq)
+times = np.arange(0, ACQTIME, sinterval)
 
+fig2, ax2 = plt.subplots()
+ax2.plot(times, view_relaxed)
+ax2.set(xlabel='Time (s)', ylabel='Voltage (V)', title='Relaxed State Raw Data')
+fig3, ax3 = plt.subplots()
+ax3.plot(times, view_concentrated)
+ax3.set(xlabel='Time (s)', ylabel='Voltage (V)', title='Concentrated State Raw Data')
 
+fig3, ax3 = plt.subplots()
+ax3.plot(freq[0:250], ps_relaxed[0:250])
+ax3.set(xlabel='Time (s)', ylabel='Power', title='Relaxed State Power Spectrum')
+fig4, ax4 = plt.subplots()
+ax4.plot(freq[0:250], ps_concentrated[0:250])
+ax4.set(xlabel='Time (s)', ylabel='Power', title='Concentrated State Power Spectrum')
 
+fig3, ax3 = plt.subplots()
+ax3.plot(times, brain_relaxed)
+ax3.set(xlabel='Time (s)', ylabel='Voltage (V)', title='Relaxed State Brain Wave')
+fig4, ax4 = plt.subplots()
+ax4.plot(times, brain_concentrated)
+ax4.set(xlabel='Time (s)', ylabel='Voltage (V)', title='Concentrated State Brain Wave')
+plt.show()
 
 print('Best cutoff RMS voltage is', V0)
 print('Chance of getting incorrect classification is', 50*(wrong_relax+wrong_concentrate))
