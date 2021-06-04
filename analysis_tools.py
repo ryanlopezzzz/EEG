@@ -2,6 +2,7 @@ import numpy as np
 import math
 from scipy.stats import norm
 from scipy.special import erf
+import time
 
 def get_power_spectrum(time_series):
     """
@@ -93,7 +94,7 @@ def calibration(calibration_time,sps,adc,freq_min=8,freq_max=12,print_time=False
     nsamples = calibration_time*sps
     sinterval = 1/sps
     time_series = np.zeros(nsamples)
-    adc.startContinuousDifferentialConversion(2, 3, pga=VRANGE, sps=sps)
+    adc.startContinuousDifferentialConversion(2, 3, pga=6144, sps=sps)
     t0 = time.perf_counter()
     for i in range(nsamples): #Collects data every sinterval
         st = time.perf_counter()

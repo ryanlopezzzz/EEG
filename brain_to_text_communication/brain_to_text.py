@@ -4,6 +4,8 @@ Program Description:
 This program allows the user to communicate text by using concentration levels to signal binary data which is converted to letters
 and spaces.
 """
+from Adafruit import ADS1x15
+import time
 import os
 import sys
 sys.path.insert(1, os.path.dirname(os.getcwd())) #This allows importing files from parent folder
@@ -11,18 +13,18 @@ import numpy as np
 from scipy.stats import norm
 import matplotlib.pyplot as plt
 import pickle
-from analysis_tools import get_power_spectrum, get_rms_voltage, gaussian_eval
+from analysis_tools import get_power_spectrum, get_rms_voltage, gaussian_eval, get_cutoff
 import pygame
 from pygame import mixer #modulo for playing audio
 mixer.init() 
-alert=mixer.Sound('bell.wav') #sets alert sound
+alert=mixer.Sound('beep.wav') #sets alert sound
 
 alphabet = {   #This alphabet dictionary is the defined mapping from a-z + ' ' to 5 binary digits.
     'a': [1,1,0,0,0],
     'b': [1,0,0,0,0],
-    'c': [0,0,0,1,0],
+    'c': [1,1,1,1,1],
     'd': [0,0,1,0,0],
-    'e': [1,1,1,1,1],
+    'e': [0,0,0,1,0],
     'f': [0,1,1,1,1],
     'g': [1,1,1,1,0],
     'h': [1,0,0,0,1],
@@ -64,7 +66,7 @@ def get_sentence_from_binary(binary):
     string = ''
     for i in range(int(len(binary)/5)): #goes through all characters
         binary_char = binary[5*i:5*(i+1)] #continues to get 5 binary characters corresponding to each letter
-        character = list(alphabet.keys())[list(alphabet.values()).index(binary_letter)] #finds letter corresponding to binary
+        character = list(alphabet.keys())[list(alphabet.values()).index(binary_char)] #finds letter corresponding to binary
         string += character
     return string
         
@@ -130,14 +132,16 @@ freq = np.fft.fftfreq(time_series.size, d=1/sps) #Gets frequencies in Hz/sec
 freq_min = 8 #minimum freq in Hz for alpha waves
 freq_max = 12 #maximum freq in Hz for alpha waves
 times = np.linspace(0, exptime, num=exptime*sps)
-rms_times = np.linspace(0,exptime-sampletime, num=(exptime-sampletime)*sps)    
+rms_times = np.linspace(0,exptime, num=exptime*sps)    
 rms_values = []
+adc = ADS1x15() #Instantiate Analog Digital Converter
+
 
 """
 Set up times for comuting RMS average and doing beeps.
 """
 switch_points = np.arange(sampletime,exptime,binarytime) #when beeping should occur to denote a switch, doesn't include exptime
-switch_indices = (switchpoints*sps).astype(np.int32) #on what index to beep.
+switch_indices = (switch_points*sps).astype(np.int32) #on what index to beep.
 start_record = switch_points + switchtime/2 #start of each recording interval (ignores very beginning while switching)
 end_record = switch_points + binarytime - switchtime/2 #end of each recording interval (ignores very end while switching)
 interval_times = np.array([start_record, end_record]).T
@@ -145,18 +149,17 @@ interval_indices = (interval_times*sps).astype(np.int32) #shape: [num of binary 
 print('You will have %.1f seconds before recording starts, you should move onto the next character every %.2f seconds and will be notified of this with a beep.'%(sampletime,binarytime))
 input('Press <Enter> to start %.1f s data acquisition...' % exptime)
 print()
-adc.startContinuousDifferentialConversion(2, 3, pga=VRANGE, sps=SPS)
+adc.startContinuousDifferentialConversion(2, 3, pga=VRANGE, sps=sps)
 
 t0 = time.perf_counter()
-for i in range(nsamples): #Collects data every sinterval
+for i in range(raw_data_len): #Collects data every sinterval
     st = time.perf_counter()
     if i in switch_indices:
-        pass
-        #Do beep, maybe need to stop beep?
-    time_series[i] = 0.001*adc.getLastConversionResults() #Times 0.001 since adc measures in mV
-    time_series[i] -= 3.3 #ADC ground is 3.3 volts above circuit ground
+        alert.play()
+    volt_diff = 0.001*adc.getLastConversionResults()-3.3 #0.001 to convert mV -> V, adc ground is 3.3 volts above circuit ground 
+    time_series = update_timeseries(time_series, volt_diff)
     ps = get_power_spectrum(time_series)
-    get_rms_voltage(ps, freq_min, freq_max, freq, time_series_len)
+    rms = get_rms_voltage(ps, freq_min, freq_max, freq, time_series_len)
     rms_values.append(rms)
     while (time.perf_counter() - st) <= sinterval:
         pass
@@ -166,14 +169,18 @@ print('Time elapsed: %.9f s.' % t)
 
 binary_data = []
 for interval in interval_indices: #goes through each interval -- one for each binary character
-    if np.mean(rms_vals[interval[0]:interval[1]]) < cutoff:
+    if np.mean(rms_values[interval[0]:interval[1]]) < cutoff:
         binary_data.append(0) #if in concentrated state, give 0
     else:
         binary_data.append(1) #if in relaxed state, give 1
 predicted_sentence = get_sentence_from_binary(binary_data)
+print('Read binary: ', binary_data)
+print('\n \n')
 print('Alpha Waves read that you want to say: \n')
 print(predicted_sentence)
 print()
+plt.plot(rms_times,rms_values)
+plt.show()
 input('Press <Enter> to end program')
 
 

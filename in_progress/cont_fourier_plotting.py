@@ -87,9 +87,3 @@ t = time.perf_counter() - t_start
 adc.stopContinuousConversion()
 print('Time elapsed: %.9f s.' % t)
 print()
-    
-    
-    
-    
-    
-    

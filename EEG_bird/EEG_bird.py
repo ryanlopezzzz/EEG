@@ -5,16 +5,17 @@ Note
 - in the beginning rms are 0 so bird will instantly die and the game will be at the game over page, check if this is ok when running
 - when bird dies, we currently do not stop take data
 """
-
+import matplotlib.pyplot as plt
 import pygame,sys,random
 import time
 import numpy as np
 from Adafruit import ADS1x15
 import pickle
 import collections
+import os
 
-from analysis_tools import get_power_spectrum, get_rms_voltage
 sys.path.insert(1, os.path.dirname(os.getcwd())) #This allows importing files from parent folder
+from analysis_tools import get_power_spectrum, get_rms_voltage
 
 """
 Parameters related to game difficulty
@@ -23,7 +24,7 @@ TOP_BOTTOM_SEP = 200 # how much one want the top and bottom pipe to be separated
 FLOOR_RATE = 1 # how fast floor moving left
 PIPE_RATE = 1 # how fast pipe moving left
 PIPE_HEIGHT = [200,300,400] # all the possible pipe heights
-PIPE_INTERVAL = 2000 # time interval between pipes, unit ms
+PIPE_INTERVAL = 3000 # time interval between pipes, unit ms
 MAX_FRAME_RATE = 128 # Same as SPS, Caps the # frame/sample per second
 SCORE_RATE = 0.01
 INITIAL_BIRD_Y = 50 # initial y coordinate of the bird
@@ -38,12 +39,13 @@ adc = ADS1x15() #Instantiate Analog Digital Converter
 VRANGE = 4096
 sps = MAX_FRAME_RATE # Samples per second to collect data. Options: 128, 250, 490, 920, 1600, 2400, 3300. Here, this is the same as frame rate
 sinterval = 1.0/sps
-sampletime = 3 # how long to look back in time for current alpha waves
-time_series_len = sampletime * sps
+sampletime = 0.5 # how long to look back in time for current alpha waves
+time_series_len = int(sampletime * sps)
 time_series = np.zeros(time_series_len)
 freq = np.fft.fftfreq(time_series_len, d=1/sps) #Gets frequencies in Hz/sec
 freq_min = 8 #minimum freq in Hz for alpha waves
 freq_max = 12 #maximum freq in Hz for alpha waves
+velocity=0.5
 
 """
 Calibration code
@@ -71,19 +73,25 @@ def calibration(calibration_time,sps,freq_min=8,freq_max=12,print_time=False):
     freq = np.fft.fftfreq(nsamples, d=1.0/sps)
     ps = get_power_spectrum(time_series)
     rms = get_rms_voltage(ps, freq_min, freq_max, freq, nsamples)
+    if print_time:
+        plt.plot(time_series)
+        plt.show()
+        print('rms', rms)
     
     return rms
     
-calibration_time = 10
+calibration_time = 5
 
 input('Press <Enter> to start %.1f s calibration for relaxed data...' % calibration_time)
 print()
-up_level = calibration(calibration_time,sps)
+up_level = calibration(calibration_time,sps, print_time=True)
 
 input('Press <Enter> to start %.1f s calibration for concentrated data... Do not blink please!' % calibration_time)
 print()
-low_level = calibration(calibration_time,sps)
+low_level = calibration(calibration_time,sps, print_time=True)
 
+cutoff = 0.91*low_level+ 0.09*up_level
+mid_level = 0.5*low_level+ 0.5*up_level
 
 """
 Game Section
@@ -122,7 +130,7 @@ def check_collision(pipes):
     for pipe in pipes:
         if bird_rect.colliderect(pipe):
             return False
-    if bird_rect.top <= -50 or bird_rect.bottom >= 450: # 450 is the floor y coordinate
+    if bird_rect.bottom >= 450: # 450 is the floor y coordinate
         return False
     return True
 
@@ -149,7 +157,7 @@ def update_score(score, high_score):
 pygame.init()
 screen = pygame.display.set_mode((288,512))
 clock = pygame.time.Clock()
-game_font = pygame.font.Font('04B_19.ttf',20)
+game_font = pygame.font.Font('04B_19.TTF',20)
 
 # initialize game variables
 game_active = True
@@ -178,12 +186,13 @@ game_over_rect = game_over_surface.get_rect(center = (144, 256))
 """
 Main game loop
 """
-
-### t0 = time.perf_counter()
-### times = []
-### for i in range(40):
+input('Press <Enter> to start the game')
+###t0 = time.perf_counter()
+###times = []
 
 adc.startContinuousDifferentialConversion(2, 3, pga=VRANGE, sps=sps) #Returns the voltage difference in millivolts between port 2 and 3 on the ADC.
+
+###for i in range(128):
 while True:
 
     # data taking part
@@ -231,7 +240,8 @@ while True:
         # bird_rect.centery += bird_movement
         
         # more concentrate = higher
-        bird_rect.centery = 512*(rms_value-low_level)/(up_level-low_level)
+        
+        bird_rect.centery += 512*velocity * (1/sps) * ((rms_value-cutoff)/(up_level-low_level)) #512*(rms_value-low_level)/(up_level-low_level)
         screen.blit(bird_surface,bird_rect)
         game_active = check_collision(pipe_list)
     
@@ -246,11 +256,12 @@ while True:
         screen.blit(game_over_surface, game_over_rect)
         high_score = update_score(score, high_score)
         score_display('game_over')
+        bird_rect.centery = 512*mid_level/(up_level-low_level)
     
     pygame.display.update()
     
     clock.tick(MAX_FRAME_RATE)
-    ### times.append(time.perf_counter()-t0)
+    ###times.append(time.perf_counter()-t0)
 
-### print(times)
-### header code for testing how much time elapse during one loop, important for fft
+###print(times)
+#header code for testing how much time elapse during one loop, important for fft

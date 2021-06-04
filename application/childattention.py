@@ -19,7 +19,7 @@ from analysis_tools import get_power_spectrum, get_rms_voltage, get_brain_wave, 
 import pygame
 from pygame import mixer #modulo for playing audio
 mixer.init() 
-alert=mixer.Sound('bell.wav') #sets alert sound
+alert=mixer.Sound('rei.wav') #sets alert sound
 
 def update_timeseries(time_series, volt_diff):
     """
@@ -63,7 +63,7 @@ freq_min = 8 #minimum freq in Hz for alpha waves
 freq_max = 12 #maximum freq in Hz for alpha waves
 
 while True:
-    response = input('Enter good cutoff voltage (number) or type c to calibrate (c).')
+    response = input('Enter good cutoff voltage (number) or type c to calibrate (c).  ')
     if response == 'c':
         cutoff = get_cutoff(3,5,490,adc)
         print('You have cutoff voltage',cutoff)
@@ -76,12 +76,12 @@ while True:
         
 while True:
     try:
-        max_rest = float(input('Enter maximum allowed rest time'))
+        max_rest = float(input('Enter maximum allowed rest time in seconds  '))
         break
-    else:
+    except:
         print('Please enter a number')
 
-input('Press <Enter> to start %.1f minutes session...' % exptimem)
+input('Press <Enter> to start %.1f minutes session... ' % exptimem)
 print()
 
 times = [] #fills with time values
@@ -92,10 +92,13 @@ last_concentrate_dist = 0 #keeps track of how many indices ago the last concentr
 fig, ax = plt.subplots()
 line, = ax.plot([],[], lw=3) #creates empty line object
 ax.set_xlim(0, exptime)
-ax.set_ylim(0,50)
-ax.axhline(y=cutoff,color='black')
+ax.set_ylim(0,0.4)
+ax.axhline(y=cutoff,color='black',label="Relaxed cutoff")
+ax.set(xlabel='Time (s)', ylabel='RMS Alpha Wave Voltage (V)', title='Relaxation Level')
+ax.legend()
 fig.canvas.draw()
 plt.show(block=False) #block=False shows plot and allows rest of code to run
+time.sleep(3)
 
 adc.startContinuousDifferentialConversion(2, 3, pga=VRANGE, sps=sps) #Returns the voltage difference in millivolts between port 2 and 3 on the ADC.
 t0 = time.perf_counter()
@@ -110,10 +113,8 @@ for i in range(nsamples):
         last_concentrate_dist +=1
     else: #user just concentrated
         last_concentrate_dist = 0
-    if last_concentrate > max_rest*sps:
+    if last_concentrate_dist > max_rest*sps:
         alert.play() #user has been resting too long, alert them
-    else:
-        mixer.stop() #sound alerting sound, user is concentration
      
     #Plotting real time stuff
     times.append(i*sinterval) #adds current time
@@ -127,6 +128,5 @@ t = time.perf_counter() - t0
 adc.stopContinuousConversion()
 print('Time elapsed: %.9f s.' % t)
 print()
-print("Time perf counter: ", time.perf_counter())
                                                    
                                                                                                          
