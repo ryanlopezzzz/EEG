@@ -41,7 +41,6 @@ Note that the circuit/head ground is 3.3V above the ADC/Rpi ground to make sure 
 
 ## Circuit Schematic
 ![](images/circuit.png)
-<img src="testing_circuit/figures/circuit_dB.png" width=475> <img src="testing_circuit/figures/circuit_VG.png" width=475>
 
 The circuit consist of the following sections:
 * Instrumental Amplifier (gain ~91)
