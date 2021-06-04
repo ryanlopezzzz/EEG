@@ -93,6 +93,7 @@ fig, ax = plt.subplots()
 line, = ax.plot([],[], lw=3) #creates empty line object
 ax.set_xlim(0, exptime)
 ax.set_ylim(0,50)
+ax.axhline(y=cutoff,color='black')
 fig.canvas.draw()
 plt.show(block=False) #block=False shows plot and allows rest of code to run
 
