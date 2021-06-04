@@ -32,6 +32,8 @@ The voltage difference oscillations between the 2nd and 3rd electrodes are the t
 ## Wiring
 ![](images/Wiring.png)
 
+<img src="images/circuit6.png" width=475> <img src="testing_circuit/figures/notch2_dB.png" width=475>
+
 The above diagram describes the complete EEG setup. The user tapes 3 electrodes to their scalp at various locations to measure the brain's electrical signals. These elcetrodes are attached to the circuit, which serves to amplify alpha waves and filter out other signals. The voltage output of the circuit is measured with the ADC and the data is sent to the Rpi. The Rpi applies further digital filtering and outputs the voltage of the user's alpha waves.
 
 Note that we have two different grounds; the ADC and Rpi ground (black) at 0V, and the circuit ground (pink) at 3.3V. This design choice is due to ADC input voltage limitations and is explained in detail later. To get the -9V to 9V of power with respect to the 3.3V ground, connect one 9V battery the correct way, and the other one backwards.
