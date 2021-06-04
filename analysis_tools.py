@@ -73,3 +73,28 @@ def gaussian_eval(relaxed, concentrated):
     c_overlap = (1-abs(erf(c_z)))/2
     
     return V0, c_overlap, r_overlap
+    
+def calibration(calibration_time,sps,freq_min=8,freq_max=12,print_time=False):
+    """
+    code for calibration
+    """
+    nsamples = calibration_time*sps
+    sinterval = 1/sps
+    time_series = np.zeros(nsamples)
+    adc.startContinuousDifferentialConversion(2, 3, pga=VRANGE, sps=sps)
+    t0 = time.perf_counter()
+    for i in range(nsamples): #Collects data every sinterval
+        st = time.perf_counter()
+        time_series[i] = 0.001*adc.getLastConversionResults() #Times 0.001 since adc measures in mV
+        time_series[i] -= 3.3 #ADC ground is 3.3 volts above circuit ground
+        while (time.perf_counter() - st) <= sinterval:
+            pass
+    t = time.perf_counter() - t0
+    adc.stopContinuousConversion()
+    if print_time:
+        print('Time elapsed: %.9f s.' % t)
+    freq = np.fft.fftfreq(nsamples, d=1.0/sps)
+    ps = get_power_spectrum(time_series)
+    rms = get_rms_voltage(ps, freq_min, freq_max, freq, nsamples)
+    
+    return rms
