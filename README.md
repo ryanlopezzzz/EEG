@@ -1,4 +1,4 @@
-# Project Description (under construction) 
+# Project Description 
 This project builds an EEG circuit which will allow the user to send morse code to a computer through their brain wave activity. It is a basic form of “mind reading” and has applications in helping paralyzed people who can not speak or write. The circuit amplifies electrical signals from the brain and uses various high and low pass analog filters. We then post-process the data using digital filters, statistical methods, and Single Component analysis. We hope to demonstrate the successful communication of words in a timely manner through brainwave data. The biggest challenge is that an EEG which measures voltage differences across your scalp can produce noisy and sometimes unreliable signals, so careful filtering and project design must be done. Our general approach is to distinguish between two mental states with the EEG, whether a person is relaxed (alpha waves, 8-12Hz) or if they are concentrating / alert (beta waves, 12-30Hz). The user can then switch between these two mental states over time signaling a beep or no beep to communicate in morse code. We will use the following link as a starting point (found on instructables.com/DIY-EEG-and-ECG-Circuit/). 
 
 ## EEG Crash Course
@@ -37,9 +37,6 @@ The voltage difference oscillations between the 2nd and 3rd electrodes are the t
 The above diagram describes the complete EEG setup. The user tapes 3 electrodes to their scalp at various locations to measure the brain's electrical signals. These elcetrodes are attached to the circuit, which serves to amplify alpha waves and filter out other signals. The voltage output of the circuit is measured with the ADC and the data is sent to the Rpi. The Rpi applies further digital filtering and outputs the voltage of the user's alpha waves.
 
 Note that we have two different grounds; the ADC and Rpi ground (black) at 0V, and the circuit ground (pink) at 3.3V. This design choice is due to ADC input voltage limitations and is explained in detail later. To get the -9V to 9V of power with respect to the 3.3V ground, connect one 9V battery the correct way, and the other one backwards.
-
-The above diagram describes the complete EEG setup from electrode placement on the scalp to the data reading on the Raspberry Pi.
-Note that the circuit/head ground is 3.3V above the ADC/Rpi ground to make sure the signal is always positive because the ADC chip struggles to read negative signals. The electrode behind the ear is connected to the 3.3V circuit ground. The other two electrodes are fed into the first instrumental amplifier. The instrumental amplifiers are fed with -9V to 9V of power with respect to the 3.3V ground, by connecting one 9V battery the correct way, and one backwards. The ADC and RPI are connected to the true ground.
 
 ## Circuit Schematic
 ![](images/circuit.png)
