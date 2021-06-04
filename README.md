@@ -32,7 +32,7 @@ The voltage difference oscillations between the 2nd and 3rd electrodes are the t
 ## Wiring
 ![](images/Wiring.png)
 
-<img src="images/physical_setup.png" width=500> <img src="testing_circuit/figures/notch2_dB.png" width=475>
+<img src="images/physical_setup.png" width=500> 
 
 The above diagram describes the complete EEG setup. The user tapes 3 electrodes to their scalp at various locations to measure the brain's electrical signals. These elcetrodes are attached to the circuit, which serves to amplify alpha waves and filter out other signals. The voltage output of the circuit is measured with the ADC and the data is sent to the Rpi. The Rpi applies further digital filtering and outputs the voltage of the user's alpha waves.
 
