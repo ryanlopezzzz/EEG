@@ -86,7 +86,7 @@ def gaussian_eval(relaxed, concentrated):
     
     return V0, c_overlap, r_overlap
     
-def calibration(calibration_time,sps,freq_min=8,freq_max=12,print_time=False):
+def calibration(calibration_time,sps,adc,freq_min=8,freq_max=12,print_time=False):
     """
     code for calibration
     """
@@ -110,3 +110,20 @@ def calibration(calibration_time,sps,freq_min=8,freq_max=12,print_time=False):
     rms = get_rms_voltage(ps, freq_min, freq_max, freq, nsamples)
     
     return rms
+
+def get_cutoff(num_samples, calibration_time, sps, adc):
+    """
+    Prompts user to record num_samples of relaxed and concentrated
+    states for calibration_time each. Returns ideal cutoff RMS voltage between
+    relaxed and concentrated state.
+    """
+    relaxed_rms = np.zeros(num_samples)
+    concentrated_rms = np.zeros(num_samples)
+    for i in range(num_samples):
+        input("Press <Enter> to record relaxed state")
+        relaxed_rms[i] = calibration(calibration_time,sps,adc)
+        input("Press <Enter> to record concentrated state")
+        concentrated_rms[i] = calibration(calibration_time,sps,adc)
+    cutoff, _, __ = gaussian_eval(relaxed_rms, concentrated_rms) #only care about cutoff
+    return cutoff
+    
