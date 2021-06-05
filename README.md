@@ -7,10 +7,10 @@ In our project, we use a circuit to amplify the electrode signals from the brain
 1st application: use EEG to play "EEG bird" (modeled after flappy bird). 
 * https://youtu.be/KFIHE_fInmM
 
-2nd application: use EEG to monitor child concentration level. We had fun making this video!!
+2nd application: use EEG to monitor child attention level. We had fun making this video!!
 * https://youtu.be/HQ8krHOXocc 
 
-3rd application: use EEG to communicate simple words, in hope to help paralized people communicate.
+3rd application: brain-to-text communication, in hope to help paralized people communicate.
 * https://youtu.be/74iM_w6vFuU
 
 We based our project on the guidance of an amazing article instructables.com/DIY-EEG-and-ECG-Circuit/. However, we created our own circuit design, wrote our own code for data-taking and analysis, and included unique and fun applications. We hope this Github Repositary can help people implement and debug their own EEG circuit. Make sure to check out the circuit debugging tips section if you are working on a similar project and your circuit doesn't work!
@@ -174,7 +174,7 @@ Example of fourier transform (from raw data) shows clear spike in the alpha wave
 
 All of the following application relies on the singular fact that alpha wave magnitude increases in relaxed state and decreases in concentrated state. Calibration is also very necessary for all of the applications since alpha wave magnitude varies from person to person, and since the gain of the second amplifier is adjustable.
 
-## Flappy Bird
+## EEG Bird https://youtu.be/KFIHE_fInmM
 
 EEG_bird is a game modeled after the popular flappy bird game, but adjusted to take EEG brain waves as input. In general, the more concentrated the higher bird flies, the more relaxed/eye closed the lower bird flies. To make the bird motion smoother, we make the concentration level correspond not directly to the height of the bird, but the velocity of the bird (velocity positive when bird concentrated, negative when relaxed). 
 
@@ -182,11 +182,11 @@ Even though the original flappy bird game is hard, using EEG signal as input mak
 
 See code for more detailed documentations
 
-## Child Attention Monitor
+## Child Attention Monitor https://youtu.be/HQ8krHOXocc 
 
+<img src="attention_monitor/video_fig.jpg" width=475>
 
-## Binary EEG Communicator
-
+## Brain-to-text Communication https://youtu.be/74iM_w6vFuU
 
 
 # Future improvement
