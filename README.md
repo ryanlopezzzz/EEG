@@ -15,6 +15,7 @@ In our project, we use a circuit to amplify the electrode signals from the brain
 
 We based our project on the guidance of an amazing article instructables.com/DIY-EEG-and-ECG-Circuit/. However, we created our own circuit design, wrote our own code for data-taking and analysis, and included unique and fun applications. We hope this Github Repositary can help people implement and debug their own EEG circuit. Make sure to check out the circuit debugging tips section if you are working on a similar project and your circuit doesn't work!
 
+Our project presentation: https://docs.google.com/presentation/d/12gxBqD7eJtzKXW-NE2dzhQD0BcE0SRJ6LncpbzUi6I8/edit?usp=sharing
 
 # Methods
 
