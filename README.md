@@ -170,6 +170,8 @@ Example of fourier transform (from raw data) shows clear spike in the alpha wave
 
 <img src="brain_data/figures/Hak_Relaxed_Power_Spectrum.png" width=475>
 
+[Click here to access all the data we took](brain_data)
+
 # Applications
 
 All of the following application relies on the singular fact that alpha wave magnitude increases in relaxed state and decreases in concentrated state. Calibration is also very necessary for all of the applications since alpha wave magnitude varies from person to person, and since the gain of the second amplifier is adjustable.
