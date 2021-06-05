@@ -1,20 +1,22 @@
 # Project Description 
-This project builds an EEG circuit which will allow the user to send morse code to a computer through their brain wave activity. It is a basic form of “mind reading” and has applications in helping paralyzed people who can not speak or write. The circuit amplifies electrical signals from the brain and uses various high and low pass analog filters. We then post-process the data using digital filters, statistical methods, and Single Component analysis. We hope to demonstrate the successful communication of words in a timely manner through brainwave data. The biggest challenge is that an EEG which measures voltage differences across your scalp can produce noisy and sometimes unreliable signals, so careful filtering and project design must be done. Our general approach is to distinguish between two mental states with the EEG, whether a person is relaxed (alpha waves, 8-12Hz) or if they are concentrating / alert (beta waves, 12-30Hz). The user can then switch between these two mental states over time signaling a beep or no beep to communicate in morse code. We will use the following link as a starting point (found on instructables.com/DIY-EEG-and-ECG-Circuit/). 
 
-## EEG Crash Course
-EEG stands for electroencephalogram. It measures voltage fluctuations resulting from ionic current within the neurons of the brain. 
-Neurons exchange ions with environment and when many ions are pushed out of many neurons at the same time, they repel and push each other forming a wave. The waves reaches scalp and can be captured by the electrodes. Note that EEG does not capture the activities of single neurons-the electric potential is way to small to be captured. Instead, EEG measures the voltage difference in 2 electrodes over time, which reflect synchronized activity over a network of neurons. Spatially well-aligned neurons fire together, so the electrode placements need to be in specific regions to observe oscillations/waves of interest. These waves have different characteristic frequency, magnitude, and are related to different brain activties. 
+This project builds an EEG device that measures brain waves--specifically the alpha waves. EEG use electrodes to measure the voltage difference in brain regions with similar spatial orientations. These voltage differences oscillate and represent synchronized activity over a network of neurons. Depending on the electrode placements, brain waves have different characteristic frequency, magnitude, and are related to different brain activties. In our project, we measure alpha waves originating from the occipital lobe because they are one of the strongest EEG signals. Alpha waves have a signature frequency in the range of 8-12 HZ. It reflects activities of the visual cortex: it is increased with closed eyes and relaxation, and decreased with open eyes and concentration. 
 
-In our project, we measure alpha waves originating from the occipital lobe because they are one of the strongest EEG signals. Alpha waves have a signature frequency in the range of 8-12 HZ. Alpha waves are reduced with open eyes, drowsiness, and sleep. It is still under study but main stream research shows it represent the activity of the visual cortex in an idle state. In theory, our circuit also has the capacity to measure beta waves (12-30 HZ).
+In our project, we use a circuit to amplify the electrode signals from the brain, and uses a number of high pass, low pass, and notch filters to filter out frequencies outside of 8-12 HZ. Then, we take data with a raspberry pi 4 and post-process the data using digital filters and analyze it with statistical methods. In the end, we successfully captured alpha waves and observed that its magnitude varies significantly from concentrated state to relaxed state. Furthermore, we came up with three applications that utilizes the fact that alpha waves have distinct magnitudes between concentrated state and relaxed state:
+
+1st application: use EEG to play "EEG bird" (modeled after flappy bird). 
+* https://youtu.be/KFIHE_fInmM
+
+2nd application: use EEG to monitor child concentration level. We had fun making this video!!
+* https://youtu.be/HQ8krHOXocc 
+
+3rd application: use EEG to communicate simple words, in hope to help paralized people communicate.
+* https://youtu.be/74iM_w6vFuU
+
+We based our project on the guidance of an amazing article instructables.com/DIY-EEG-and-ECG-Circuit/. However, we created our own circuit design, wrote our own code for data-taking and analysis, and included unique and fun applications. We hope this Github Repositary can help people implement and debug their own EEG circuit. Make sure to check out the circuit debugging tips section if you are working on a similar project and your circuit doesn't work!
+
 
 # Methods
-
-## Eletrode Placement for Alpha Waves Measurements
-There are many possible electrode placements depending on what wave one choose to measure. In our project, we measure alpha waves  We need to use three electrode: one at the left mastoid (the bone at the back of the left ear) which is connected to the ground of the circuit; one located one inch above and one inch right of the nasion (the midline bony depression between the eyes where the frontal and two nasal bones meet); the last one located one inch above and one inch right of the inion (the projecting part of the occipital bone at the base of the skull). The 2nd and 3rd electrode placements are approximately in O2 and Fp2 regions in the below diagram:
-
-<img src="images/head.png" width=300>
-
-The voltage difference oscillations between the 2nd and 3rd electrodes are the target alpha waves, which is then fed to the circuit to be amplified, filtered, and analyzed.
 
 ## List of Components
 * Raspberry Pi 4
@@ -24,19 +26,28 @@ The voltage difference oscillations between the 2nd and 3rd electrodes are the t
 * [Quad Operational Amplifier TL084x](https://www.ti.com/lit/ds/symlink/tl081a.pdf?HQS=dis-dk-null-digikeymode-dsf-pf-null-wwe&ts=1619312373475&ref_url=https%253A%252F%252Fwww.digikey.ca%252F)
 * Potentiometer CT6EW102-ND, 1kOhm
 * Capacitors and Resistors
-* two 9V batteries
+* two 9V batteries and battery cases
 * Bread board and wires
-* Open Scope MZ (Used as oscilloscope and wave generator for testing circuit only)
-* ADDDDDDDDD ADC!!!!!
+* ADC Chip
+* Multimeter (for testing circuit)
+* Open Scope MZ (Used as oscilloscope and wave generator for testing circuit only due to covid, if you have access to a real oscilloscope and wave generator, lucky you and go for those)
 
 ## Wiring
-![](images/Wiring.png)
-
-<img src="images/physical_setup.png" width=500> 
+![](images/Wiring.png) 
 
 The above diagram describes the complete EEG setup. The user tapes 3 electrodes to their scalp at various locations to measure the brain's electrical signals. These elcetrodes are attached to the circuit, which serves to amplify alpha waves and filter out other signals. The voltage output of the circuit is measured with the ADC and the data is sent to the Rpi. The Rpi applies further digital filtering and outputs the voltage of the user's alpha waves.
 
 Note that we have two different grounds; the ADC and Rpi ground (black) at 0V, and the circuit ground (pink) at 3.3V. This design choice is due to ADC input voltage limitations and is explained in detail later. To get the -9V to 9V of power with respect to the 3.3V ground, connect one 9V battery the correct way, and the other one backwards.
+
+Here is a picture of the physical setup:
+<img src="images/physical_setup.png" width=500>
+
+## Eletrode Placement for Alpha Waves Measurements
+There are many possible electrode placements depending on what wave one choose to measure. In our project, we measure alpha waves. We need to use three electrode: one at the left mastoid (the bone at the back of the left ear) which is connected to the ground of the circuit. This electrode helps with noise cancelling; one located one inch above and one inch right of the nasion (the midline bony depression between the eyes where the frontal and two nasal bones meet); the last one located one inch above and one inch right of the inion (the projecting part of the occipital bone at the base of the skull). The 2nd and 3rd electrode placements are approximately in O2 and Fp2 regions in the below diagram:
+
+<img src="images/head.png" width=400>
+
+The voltage difference oscillations between the 2nd and 3rd electrodes are the target alpha waves, which is then fed to the circuit to be amplified and filtered.
 
 ## Circuit Schematic
 ![](images/circuit.png)
@@ -49,12 +60,15 @@ The circuit consist of the following sections:
 * Instrumental Amplifier with variable gain (gain ~ 90-460)
 * Notch Filter (60 HZ, gain = 1)
 
+The total filter responses (no gain) is shown below:
+<img src="testing_circuit/figures/circuit_VG.png" width=600><img src="testing_circuit/figures/circuit_dB.png" width=600>
+
 Individual Section are discussed further below.
 
 ### Instrumental Amplifier (gain ~91)
 <img src="images/circuit1.png" width=400>
 Alpha wave signals is 15-50 uV so we need a lot of amplification in the circuit. (LETS CITE INFORMATION)
-An instrumentation amplifier takes as its inputs, 2 voltages, and outputs the difference between the two multiplied by some gain given by: G = 1 + (50.5 kOhm)/R, where R is the total resistance between pin 1 and 8. Note it is possible to make home-made instrumentation amplifier usually with 3 op-amps. However, it suffers from a low CMRR unless precision resitors are used. (CITE DIY)
+An instrumentation amplifier takes as its inputs, 2 voltages, and outputs the difference between the two multiplied by some gain given by: G = 1 + (50.5 kOhm)/R, where R is the total resistance between pin 1 and 8. Note it is possible to make home-made instrumentation amplifier usually with 3 op-amps. However, it suffers from a low CMRR unless precision resitors are used. (indo from Instructable)
 
 ### 1st Notch Filter (60 HZ, gain = 1)
 <img src="images/circuit2.png" width=475> <img src="testing_circuit/figures/notch1_dB.png" width=475>
@@ -94,8 +108,20 @@ To adjust the potentiometer, start taking readings and make sure one is not movi
 Another 60 HZ is necessary at the end of the circuit since the power line interferences seep into the circuit through prior steps. This is the exact copy of the 1st notch filter
 
 ### Connecting ADC to Rpi
-
 Supply the ADC chip with 5V from Rpi to ensure the maximum input voltage range possible. The pin configuration and connection in the image above is correct, but it is reccomended to double check the connection, because wiring mistakes can lead to damaging the chip and or the Rpi.
+
+## Circuit Debugging Tips
+If circuit doesn't work:
+* Check every individual section and make sure it is doing its job
+* Read data sheet and make sure nothing is over-strained
+* Use multimeter and oscilloscope to check everything! 
+* We are not circuit pro but listen to circuit pros: http://web.mit.edu/6.101/www/reference/TheArtofDebuggingCircuits.pdf
+* Switch out Op Amps, which are easy to break.
+
+If you don't see brain wave:
+* Most likely it is because the electrode placement is wrong. To solve this issue: look up what is the systematic and best practices in setting up electrodes, look up 10-20 EEG Measuring System, test it on a friend, wash your hair, etc
+* Try switching the electrode wires feeding into the instrumental amplifier, you could be amplifying negative voltages
+* Switch out Op Amps, which are easy to break.
 
 ## Post-processing (LINK THE CODE IN GITHUB TO EACH RELEVANT SECTION)
 ### Data Taking Methods
@@ -111,45 +137,26 @@ This code is created to 1) find the optimal voltage threshold which separates re
 
 We approximate concentrated and relaxed brain wave data sets each as normal Gaussian distributions. The cross point of the two gaussians give the best threshold voltage V0 which separates relaxed and concentrated data. This voltage threhold would minimizes overall wrong classifications. The overlap area divided by 2 give the probability of wrong classification since we have two normal distributions. More specifically, the ratio of overlap area left of V0 to right of V0 gives the percentage of wrong estimation being we guessed concentrated but is actually relaxed.
 
+The following are the data from Hak and Ryan, applied with Gaussian analysis. 
 
-# Results
 
-## Filter Performance
-<img src="testing_circuit/figures/circuit_VG.png" width=600>
-<img src="testing_circuit/figures/circuit_dB.png" width=600>
-(EXPLAIN DB AND TALK ABOUT THE NECESSARY LEVEL OF NOISE ATTENUATION TO SEE BRAIN WAVE DATA)
+
+
+However, do take this with a grain of salt because we have not accounted for the artifacts. We also don't know if we can assume the distribution is normal. 
+
+
+
+
+# Brain Wave Data
 
 ## Alpha Wave Data
 We built our circuit to measure Alpha waves which are from 8-12Hz. When relaxed the power of these waves should increase and when concentrating the power of these waves should decrease. To test relaxed state the user closes their eyes, to test concentrating the user opens their eyes and look at 'crazy' images.
 
+# Applications
 ## Flappy Bird
 
-### Lower Amplification Tests:
 
-| Relaxed | Concentrating |
-| --- | --- |
-| 689 | 85 |
-| 958 | 531 |
-| 829 | 429 |
-| 802 | 50 |
-| 421 | 112 |
-
-### Higher Amplification Tests:
-
-| Relaxed | Concentrating |
-| --- | --- |
-| 5,294 | 23,384 |
-| 4,848 | 36,822 |
-| 5,077 | 39, 640 |
-|11,051 | 55,365 |
-| 5,748 | 32,897 |
-
-# Next Step
-## Remaining issues
-* Accurate positioning of electrodes plays an fundamental role in good EEG data acquisition.  needs to be pin-pointed and quite exact
-
-
-## Future improvement
+# Future improvement
 ### Artefact Removal Using Independent Component Analysis
 
 The circuit has already shown success in filtering out noise in a wide frequency range (caused by skin, power line, etc). However, it is still subject to artefact signals unrelated to the brain waves of interest. The method we would like to experiment in the future is independent component analysis (ICA). It has shown to be a robust method used for EEG in field as well as in research to separate mixture of brain activities, as well as to eliminate contamination of signals by eye movements, blinks, muscle, heart and line noise.
@@ -163,13 +170,21 @@ To apply ICA to EEG data, we assume the following
 * Component time courses are independent
 * Number of components are equal or less than the number of channels
 
+We cannot apply ICA to our current circuit because we are limited by the number of electrodes. As mentioned above, we need to increase the number of electrodes our circuit can accomodate in order to separate out enough artifact components.
 
-## Potential Application
-* Meditation Score App based on Alpha Wave
-* Child Concentration Monitor
+### Improve Precision of Electrode Placements
+This is arguably the biggest unresolved challenge in our project. The electrode placements need to be rather precise to capture the signals. The fact that skull varies from person to person poses additional difficulty. A clear scalp free of oil and dendrites is also important. We need to find a systematic method to find electrode placement, and potentially use more robust tools other than tape. We have our eyes on the following link as a start point: https://www.ers-education.org/lrmedia/2016/pdf/298830.pdf
 
-# Reference and Acknolwedgement
+### Beta Waves
+This circuit should also be capable of measuring beta waves, which are in the frequency range 12-30 HZ. Beta wave is essentially the opposite of alpha waves in the sense that it is increased with concentration and decreased with relaxation. We would like to try this next.
+
+# Acknowledgement
+Many thanks to Professor Andrew Jayich, our lovely TAs Beaks and Mingyu for supporting us and guiding us along the way.
+Special thanks to Rei for giving us a huge bread board and starring in the "naughty naughty movie"
+
+# References
 * The project owes much thanks to instructables.com/DIY-EEG-and-ECG-Circuit/. We have based our procedures and methods on the instructions in this article, but we created our own circuit design and wrote our own code for data-taking and analysis. 
-* EEG and Alpha Wave informtions are largely from Wikipedia.
-* Independent Component Analysis: http://arnauddelorme.com/ica_for_dummies/; youtube series https://www.youtube.com/watch?v=kWAjhXr7pT4&list=PLXc9qfVbMMN2uDadxZ_OEsHjzcRtlLNxc&index=2; https://sccn.ucsd.edu/~jung/Site/EEG_artifact_removal.html
 * Flappy bird code reference: https://github.com/clear-code-projects/FlappyBird_Python
+* Independent Component Analysis: http://arnauddelorme.com/ica_for_dummies/; youtube series https://www.youtube.com/watch?v=kWAjhXr7pT4&list=PLXc9qfVbMMN2uDadxZ_OEsHjzcRtlLNxc&index=2; https://sccn.ucsd.edu/~jung/Site/EEG_artifact_removal.html
+* EEG and Alpha Wave informtions are largely from Wikipedia.
+
