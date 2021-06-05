@@ -7,6 +7,8 @@ One important thing to check is that the main game loop is indeed running at the
 
 Some other minor details to note: in the beginning rms are 0 so bird will easily die. But since we currently do not stop take data when game is in "game over state", this should be fine after the first game play.
 
+Ruining Zhang
+6/4/2021
 """
 
 import matplotlib.pyplot as plt

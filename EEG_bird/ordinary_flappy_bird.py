@@ -2,6 +2,9 @@
 Copied from: https://github.com/clear-code-projects/FlappyBird_Python
 But without sound, and bird flapping animation
 With different comments and parameters
+
+Ruining Zhang
+6/4/2021
 """
 
 import pygame,sys,random
