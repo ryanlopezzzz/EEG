@@ -40,6 +40,7 @@ The above diagram describes the complete EEG setup. The user tapes 3 electrodes 
 Note that we have two different grounds; the ADC and Rpi ground (black) at 0V, and the circuit ground (pink) at 3.3V. This design choice is due to ADC input voltage limitations and is explained in detail later. To get the -9V to 9V of power with respect to the 3.3V ground, connect one 9V battery the correct way, and the other one backwards.
 
 Here is a picture of the physical setup:
+
 <img src="images/physical_setup.png" width=500>
 
 ## Eletrode Placement for Alpha Waves Measurements
@@ -61,16 +62,20 @@ The circuit consist of the following sections:
 * Notch Filter (60 HZ, gain = 1)
 
 The total filter responses (no gain) is shown below:
+
 <img src="testing_circuit/figures/circuit_VG.png" width=600><img src="testing_circuit/figures/circuit_dB.png" width=600>
 
 Individual Section are discussed further below.
 
 ### Instrumental Amplifier (gain ~91)
+
 <img src="images/circuit1.png" width=400>
+
 Alpha wave signals is 15-50 uV so we need a lot of amplification in the circuit. (LETS CITE INFORMATION)
 An instrumentation amplifier takes as its inputs, 2 voltages, and outputs the difference between the two multiplied by some gain given by: G = 1 + (50.5 kOhm)/R, where R is the total resistance between pin 1 and 8. Note it is possible to make home-made instrumentation amplifier usually with 3 op-amps. However, it suffers from a low CMRR unless precision resitors are used. (indo from Instructable)
 
 ### 1st Notch Filter (60 HZ, gain = 1)
+
 <img src="images/circuit2.png" width=475> <img src="testing_circuit/figures/notch1_dB.png" width=475>
 
 The biggest source of noise in our system is centered at 60 Hz due to power line interference. This noise is present even though we use batteries to power the circuit. Thus we have 2 notch filters in the circuit (filters that have a severe reduction of gain around 1 particular frequency). The first notch filter intends to filter out interference before more gains are applied. 
@@ -82,6 +87,7 @@ The notch frequency is given by f = 1/(2 PI R C) where R = R3 = R5. The other tw
 * [More information on notch filters](https://www.electronicshub.org/band-stop-filter/)
 
 ### High Pass Filter (Fc = 7.2 Hz)
+
 <img src="images/circuit3.png" width=475> <img src="testing_circuit/figures/hp_dB.png" width=475>
 
 The high pass filter intends to filter out frequencies corresponding to galvanic skin response across our head. This interference is primarily low frequency. A second order active filter design is used here and is shown to be necessary for noise reduction. 
@@ -89,6 +95,7 @@ The high pass filter intends to filter out frequencies corresponding to galvanic
 * [More information on second order filters](https://www.electronics-tutorials.ws/filter/second-order-filters.html)
 
 ### Low Pass Filter (Fc = 32.9 Hz)
+
 <img src="images/circuit4.png" width=475> <img src="testing_circuit/figures/lp_dB.png" width=475>
 
 The EEG waves of interest to our project are alpha (8-12 HZ) and beta waves (12-30 HZ). Thus, we are not interested in frequency > 30HZ and filter them out. A second order filter design is used.
@@ -96,6 +103,7 @@ The EEG waves of interest to our project are alpha (8-12 HZ) and beta waves (12-
 * [More information on second order filters](https://www.electronics-tutorials.ws/filter/second-order-filters.html)
 
 ### Instrumental Amplifier with variable gain (gain ~ 90-460)
+
 <img src="images/circuit5.png" width=400> 
 
 This 90-460 gain is on top of the 90x gain from the first instrumentation amplifier. Alpha wave amplitude varies from person to person, from about 10 to 30 uV. Using a middle value of 20 uV, this means the ending voltage reading could range from 90*90*20e-6 = 0.162V to 460*90*20e-6 = 0.828V. The variable gain is achieved by putting resitors in series and in parallel. The gain is roughly in the range of 90-460, which corresponds to potentiometer value 1k (maximum) to 0 (minimum).
@@ -103,6 +111,7 @@ This 90-460 gain is on top of the 90x gain from the first instrumentation amplif
 To adjust the potentiometer, start taking readings and make sure one is not moving at all. Make sure voltages don't fluctuate offscreen, but avoid making it too small because then the errors incurred from digitally reading the data into rpi would be relatively increased. 
 
 ### 2nd Notch Filter (60 HZ, gain = 1)
+
 <img src="images/circuit6.png" width=475> <img src="testing_circuit/figures/notch2_dB.png" width=475>
 
 Another 60 HZ is necessary at the end of the circuit since the power line interferences seep into the circuit through prior steps. This is the exact copy of the 1st notch filter
@@ -127,11 +136,11 @@ If you don't see brain wave:
 ### Data Taking Methods
 
 ### Digital Filtering
+Example of using digital filter to keep 8-12 HZ components and inverse fourier transform back to time series:
 
-
+<img src="brain_data/figures/Hak_Concentrated_Raw_Data.png" width=475> <img src="brain_data/figures/Hak_Concentrated_Brain_Wave.png" width=475>
 
 ### Gaussian Analysis and Voltage Threshold 
-[Gaussian_eval.py](link later)
 
 This code is created to 1) find the optimal voltage threshold which separates relaxed and concentrated data and 2) Evaluate how distinct the relaxed and concentrated datasets using statistical analysis.
 
@@ -139,22 +148,28 @@ We approximate concentrated and relaxed brain wave data sets each as normal Gaus
 
 The following are the data from Hak and Ryan, applied with Gaussian analysis. 
 
+<img src="brain_data/figures/Ryan_EEG_Distribution.png" width=475> <img src="brain_data/figures/Hak_EEG_Distribution.png" width=475>
 
+The above figure contains 30 max concentrated and 30 max relaxed data for each person. One can see that the distribution is indeed different for differrent people and that the relaxed and concentrated states are very distinct. In fact, the fail rate according to the Gaussian distribution is: Ryan: 0.01%, Hak: 0.0001%. However, do take this with a grain of salt because we do see some data right next to the threshold. This is likely due to we have not accounted for the artifacts. We also don't know if we can really assume the distribution is normal. Also notice that the concentrated distribution is much narrower than the relaxed one. This shows that it is much harder to relax than to concentrate: it is easy to make sure one is concentrate by looking at colorful images and doing mental calculations. However, even when one is relaxed, it could still be hard to control involuntary eye movements and thoughts, which could possibly have an effect on alpha wave magnitude. Also, the diagram does not indicate that there is no mid-level between the concentration and relaxation gaussians. The sharp distinction between concentrated and relaxed population is simply due to when taking the data, the person is trying their hardest to concentrate/relax.
 
+# Alpha Wave Data Visualized
 
-However, do take this with a grain of salt because we have not accounted for the artifacts. We also don't know if we can assume the distribution is normal. 
+The following are examples of post-processed concentrated and relaxed data from the same person. It is clear that the magnitude of the waves are very different:
 
+<img src="brain_data/figures/Hak_Concentrated_Brain_Wave.png" width=475><img src="brain_data/figures/Hak_Relaxed_Brain_Wave.png" width=475>
 
+Example of fourier transform (from raw data) shows clear spike in the alpha wave 8-12 Hz range:
 
-
-# Brain Wave Data
-
-## Alpha Wave Data
-We built our circuit to measure Alpha waves which are from 8-12Hz. When relaxed the power of these waves should increase and when concentrating the power of these waves should decrease. To test relaxed state the user closes their eyes, to test concentrating the user opens their eyes and look at 'crazy' images.
+<img src="brain_data/figures/Hak_Relaxed_Power_Spectrum.png" width=475>
 
 # Applications
+
+All of the following application relies on the singular fact that alpha wave magnitude increases in relaxed state and decreases in concentrated state. Calibration is also very necessary for all of the applications since alpha wave magnitude varies from person to person, and since the gain of the second amplifier is adjustable.
+
 ## Flappy Bird
 
+Concentrated: positive velocity, the bird flies up. Relaxed: negative velocity, the bird flies down. 
+This does make the game play more difficult since one often needs to shift the 
 
 # Future improvement
 ### Artefact Removal Using Independent Component Analysis
