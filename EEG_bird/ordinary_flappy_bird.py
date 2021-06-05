@@ -1,3 +1,9 @@
+"""
+Copied from: https://github.com/clear-code-projects/FlappyBird_Python
+But without sound, and bird flapping animation
+With different comments and parameters
+"""
+
 import pygame,sys,random
 
 # function to draw 2 floor images next to each other
