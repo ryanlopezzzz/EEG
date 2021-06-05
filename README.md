@@ -19,6 +19,7 @@ We based our project on the guidance of an amazing article instructables.com/DIY
 # Methods
 
 ## List of Components
+
 * Raspberry Pi 4
 * [TDE-2143-C EEG Gold Cup Electrodes](http://www.discountdisposables.com/index.php?act=viewProd&productId=16)
 * Electrode gel, tape
@@ -33,6 +34,7 @@ We based our project on the guidance of an amazing article instructables.com/DIY
 * Open Scope MZ (Used as oscilloscope and wave generator for testing circuit only due to covid, if you have access to a real oscilloscope and wave generator, lucky you and go for those)
 
 ## Wiring
+
 ![](images/Wiring.png) 
 
 The above diagram describes the complete EEG setup. The user tapes 3 electrodes to their scalp at various locations to measure the brain's electrical signals. These elcetrodes are attached to the circuit, which serves to amplify alpha waves and filter out other signals. The voltage output of the circuit is measured with the ADC and the data is sent to the Rpi. The Rpi applies further digital filtering and outputs the voltage of the user's alpha waves.
@@ -44,6 +46,7 @@ Here is a picture of the physical setup:
 <img src="images/physical_setup.png" width=500>
 
 ## Eletrode Placement for Alpha Waves Measurements
+
 There are many possible electrode placements depending on what wave one choose to measure. In our project, we measure alpha waves. We need to use three electrode: one at the left mastoid (the bone at the back of the left ear) which is connected to the ground of the circuit. This electrode helps with noise cancelling; one located one inch above and one inch right of the nasion (the midline bony depression between the eyes where the frontal and two nasal bones meet); the last one located one inch above and one inch right of the inion (the projecting part of the occipital bone at the base of the skull). The 2nd and 3rd electrode placements are approximately in O2 and Fp2 regions in the below diagram:
 
 <img src="images/head.png" width=400>
@@ -51,6 +54,7 @@ There are many possible electrode placements depending on what wave one choose t
 The voltage difference oscillations between the 2nd and 3rd electrodes are the target alpha waves, which is then fed to the circuit to be amplified and filtered.
 
 ## Circuit Schematic
+
 ![](images/circuit.png)
 
 The circuit consist of the following sections:
@@ -117,9 +121,11 @@ To adjust the potentiometer, start taking readings and make sure one is not movi
 Another 60 HZ is necessary at the end of the circuit since the power line interferences seep into the circuit through prior steps. This is the exact copy of the 1st notch filter
 
 ### Connecting ADC to Rpi
+
 Supply the ADC chip with 5V from Rpi to ensure the maximum input voltage range possible. The pin configuration and connection in the image above is correct, but it is reccomended to double check the connection, because wiring mistakes can lead to damaging the chip and or the Rpi.
 
 ## Circuit Debugging Tips
+
 If circuit doesn't work:
 * Check every individual section and make sure it is doing its job
 * Read data sheet and make sure nothing is over-strained
@@ -133,9 +139,11 @@ If you don't see brain wave:
 * Switch out Op Amps, which are easy to break.
 
 ## Post-processing (LINK THE CODE IN GITHUB TO EACH RELEVANT SECTION)
+
 ### Data Taking Methods
 
 ### Digital Filtering
+
 Example of using digital filter to keep 8-12 HZ components and inverse fourier transform back to time series:
 
 <img src="brain_data/figures/Hak_Concentrated_Raw_Data.png" width=475> <img src="brain_data/figures/Hak_Concentrated_Brain_Wave.png" width=475>
@@ -168,8 +176,18 @@ All of the following application relies on the singular fact that alpha wave mag
 
 ## Flappy Bird
 
-Concentrated: positive velocity, the bird flies up. Relaxed: negative velocity, the bird flies down. 
-This does make the game play more difficult since one often needs to shift the 
+EEG_bird is a game modeled after the popular flappy bird game, but adjusted to take EEG brain waves as input. In general, the more concentrated the higher bird flies, the more relaxed/eye closed the lower bird flies. To make the bird motion smoother, we make the concentration level correspond not directly to the height of the bird, but the velocity of the bird (velocity positive when bird concentrated, negative when relaxed). 
+
+Even though the original flappy bird game is hard, using EEG signal as input makes the game even harder. There are many parameters one can change to adjust the difficulty level and make the game playable, such as: interval of the pipes, gap between top and buttom pipe, floor rate, pipe rate, relaxed/concentration level cutoff during game play, etc.
+
+See code for more detailed documentations
+
+## Child Attention Monitor
+
+
+## Binary EEG Communicator
+
+
 
 # Future improvement
 ### Artefact Removal Using Independent Component Analysis
@@ -194,7 +212,9 @@ This is arguably the biggest unresolved challenge in our project. The electrode 
 This circuit should also be capable of measuring beta waves, which are in the frequency range 12-30 HZ. Beta wave is essentially the opposite of alpha waves in the sense that it is increased with concentration and decreased with relaxation. We would like to try this next.
 
 # Acknowledgement
+
 Many thanks to Professor Andrew Jayich, our lovely TAs Beaks and Mingyu for supporting us and guiding us along the way.
+
 Special thanks to Rei for giving us a huge bread board and starring in the "naughty naughty movie"
 
 # References
