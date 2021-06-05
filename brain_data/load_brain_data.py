@@ -118,10 +118,10 @@ ax3.set(xlabel='Time (s)', ylabel='Voltage (V)', title='Concentrated State Raw D
 
 fig3, ax3 = plt.subplots()
 ax3.plot(freq[0:250], ps_relaxed[0:250])
-ax3.set(xlabel='Time (s)', ylabel='Power', title='Relaxed State Power Spectrum')
+ax3.set(xlabel='Frequency (Hz)', ylabel='Power', title='Relaxed State Power Spectrum')
 fig4, ax4 = plt.subplots()
 ax4.plot(freq[0:250], ps_concentrated[0:250])
-ax4.set(xlabel='Time (s)', ylabel='Power', title='Concentrated State Power Spectrum')
+ax4.set(xlabel='Frequency (Hz)', ylabel='Power', title='Concentrated State Power Spectrum')
 
 fig3, ax3 = plt.subplots()
 ax3.plot(times, brain_relaxed)
