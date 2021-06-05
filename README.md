@@ -180,14 +180,18 @@ EEG_bird is a game modeled after the popular flappy bird game, but adjusted to t
 
 Even though the original flappy bird game is hard, using EEG signal as input makes the game even harder. There are many parameters one can change to adjust the difficulty level and make the game playable, such as: interval of the pipes, gap between top and buttom pipe, floor rate, pipe rate, relaxed/concentration level cutoff during game play, etc.
 
-See code for more detailed documentations
+[See code for more detailed documentations](EEG_bird)
+
 
 ## Child Attention Monitor https://youtu.be/HQ8krHOXocc 
 
 <img src="attention_monitor/video_fig.jpg" width=475>
 
+[See code for more detailed documentations](attention_monitor)
+
 ## Brain-to-text Communication https://youtu.be/74iM_w6vFuU
 
+[See code for more detailed documentations](brain_to_text_communication)
 
 # Future improvement
 ### Artefact Removal Using Independent Component Analysis
