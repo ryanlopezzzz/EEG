@@ -139,13 +139,17 @@ If you don't see brain wave:
 * Try switching the electrode wires feeding into the instrumental amplifier, you could be amplifying negative voltages
 * Switch out Op Amps, which are easy to break.
 
-## Post-processing (LINK THE CODE IN GITHUB TO EACH RELEVANT SECTION)
+## Post-processing
 
 ### Data Taking Methods
 
+The output from the circuit into the ADC is the amplified voltage difference between the nasion and inion. The ADC repeatedly reads this voltage value over time and sends the data to the RPI for digital processing.
+
 ### Digital Filtering
 
-Example of using digital filter to keep 8-12 HZ components and inverse fourier transform back to time series:
+At this point our data will still contain some noise which has a frequency outside the 8-12 Hz region. To eliminate this noise, we take the fourier transform of the voltage data over a 5 second interval and set all frequency components outside 8-12 Hz to zero, and the take the inverse fourier transform to reconstruct the signal.
+
+Example of using digital filter to keep 8-12 HZ components and inverse fourier transform back to time series (before / after):
 
 <img src="brain_data/figures/Hak_Concentrated_Raw_Data.png" width=475> <img src="brain_data/figures/Hak_Concentrated_Brain_Wave.png" width=475>
 
@@ -197,7 +201,7 @@ Even though the original flappy bird game is hard, using EEG signal as input mak
 [See code for more detailed documentations](brain_to_text_communication)
 
 # Future improvement
-### Artefact Removal Using Independent Component Analysis
+### Artifact Removal Using Independent Component Analysis
 
 The circuit has already shown success in filtering out noise in a wide frequency range (caused by skin, power line, etc). However, it is still subject to artefact signals unrelated to the brain waves of interest. The method we would like to experiment in the future is independent component analysis (ICA). It has shown to be a robust method used for EEG in field as well as in research to separate mixture of brain activities, as well as to eliminate contamination of signals by eye movements, blinks, muscle, heart and line noise.
 
