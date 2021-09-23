@@ -199,6 +199,10 @@ The child attention monitor is a comical application of the EEG device. A parent
 
 ## Brain-to-text Communication https://youtu.be/74iM_w6vFuU
 
+The brain-to-text communication allows the user to display words by only changing their mental state between concentrated and relaxed. This could have applications to help paralyzed people communicate.
+
+<img src="brain_to_text_communication/text_to_brain.jpeg" width=475>
+
 [See code for more detailed documentations](brain_to_text_communication)
 
 # Future improvement
