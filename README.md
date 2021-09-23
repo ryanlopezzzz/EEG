@@ -199,7 +199,7 @@ The child attention monitor is a comical application of the EEG device. A parent
 
 ## Brain-to-text Communication https://youtu.be/74iM_w6vFuU
 
-The brain-to-text communication allows the user to display words by only changing their mental state between concentrated and relaxed. This could have applications to help paralyzed people communicate.
+The brain-to-text communication allows the user to display words by only changing their mental state between concentrated and relaxed. This could have applications to help paralyzed people communicate. Over 5 second intervals, it measures whether the user is on average concentrating or relaxed, effectively communicating one bit of information every 5 seconds. This binary data is then converted into letters and words. The graph from the youtube video is shown below.
 
 <img src="brain_to_text_communication/text_to_brain.jpeg" width=475>
 
@@ -208,14 +208,14 @@ The brain-to-text communication allows the user to display words by only changin
 # Future improvement
 ### Artifact Removal Using Independent Component Analysis
 
-The circuit has already shown success in filtering out noise in a wide frequency range (caused by skin, power line, etc). However, it is still subject to artefact signals unrelated to the brain waves of interest. The method we would like to experiment in the future is independent component analysis (ICA). It has shown to be a robust method used for EEG in field as well as in research to separate mixture of brain activities, as well as to eliminate contamination of signals by eye movements, blinks, muscle, heart and line noise.
+The circuit has already shown success in filtering out noise in a wide frequency range (caused by skin, power line, etc). However, it is still subject to artifact signals unrelated to the brain waves of interest. The method we would like to experiment with in the future is independent component analysis (ICA). It has shown to be a robust method used for EEG in the field as well as in research to separate mixtures of brain activities, as well as to eliminate contamination of signals by eye movements, blinks, muscle, heart, and line noise.
 
 ICA is a signal processing method to separate independent sources linearly mixed in several sensors. ICA recovers a version of the original sources, by multiplying the data with an unmixing matrix: U = WX, where X is the data with dimension (channel * time), U is the ICA source activties (components * time), and W is the ICA unmixing matrix.
 ICA separates out the independent components by finding W such to minimize the gaussianicity of each data set.
 
 To apply ICA to EEG data, we assume the following
 * Mixing is linear at electrodes
-* Propagation Delays are negligible
+* Propagation delays are negligible
 * Component time courses are independent
 * Number of components are equal or less than the number of channels
 
@@ -231,7 +231,7 @@ This circuit should also be capable of measuring beta waves, which are in the fr
 
 Many thanks to Professor Andrew Jayich, our lovely TAs Beaks and Mingyu for supporting us and guiding us along the way.
 
-Special thanks to Rei for giving us a huge bread board and starring in the "naughty naughty movie"
+Special thanks to Rei for giving us a huge bread board and starring in the "naughty naughty movie".
 
 # References
 * The project owes much thanks to instructables.com/DIY-EEG-and-ECG-Circuit/. We have based our procedures and methods on the instructions in this article, but we created our own circuit design and wrote our own code for data-taking and analysis. 
