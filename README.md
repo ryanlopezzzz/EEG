@@ -110,30 +110,30 @@ The EEG waves of interest to our project are alpha (8-12 HZ) and beta waves (12-
 
 <img src="images/circuit5.png" width=400> 
 
-This 90-460 gain is on top of the 90x gain from the first instrumentation amplifier. Alpha wave amplitude varies from person to person, from about 10 to 30 uV. Using a middle value of 20 uV, this means the ending voltage reading could range from 90*90*20e-6 = 0.162V to 460*90*20e-6 = 0.828V. The variable gain is achieved by putting resitors in series and in parallel. The gain is roughly in the range of 90-460, which corresponds to potentiometer value 1k (maximum) to 0 (minimum).
+This 90-460 gain is on top of the 90x gain from the first instrumentation amplifier. Alpha wave amplitude varies from person to person, from about 15 to 50 uV. Using a middle value of 30 uV, this means the ending voltage reading could range from 90*90*30e-6 = 0.243V to 460*90*30e-6 = 1.242V. The variable gain is achieved by putting resitors in series and in parallel. The gain is roughly in the range of 90-460, which corresponds to potentiometer value 1k (maximum) to 0 (minimum).
 
-To adjust the potentiometer, start taking readings and make sure one is not moving at all. Make sure voltages don't fluctuate offscreen, but avoid making it too small because then the errors incurred from digitally reading the data into rpi would be relatively increased. 
+To adjust the potentiometer, start taking readings and make sure one is not moving at all. Make sure voltages don't fluctuate offscreen, but avoid making it too small because then the errors incurred from digitally reading the data into the Rpi would be relatively increased. 
 
 ### 2nd Notch Filter (60 HZ, gain = 1)
 
 <img src="images/circuit6.png" width=475> <img src="testing_circuit/figures/notch2_dB.png" width=475>
 
-Another 60 HZ is necessary at the end of the circuit since the power line interferences seep into the circuit through prior steps. This is the exact copy of the 1st notch filter
+Another 60 HZ is necessary at the end of the circuit since the power line interference seeps into the circuit through prior steps. This is the exact copy of the 1st notch filter
 
 ### Connecting ADC to Rpi
 
-Supply the ADC chip with 5V from Rpi to ensure the maximum input voltage range possible. The pin configuration and connection in the image above is correct, but it is reccomended to double check the connection, because wiring mistakes can lead to damaging the chip and or the Rpi.
+Supply the ADC chip with 5V from Rpi to ensure the maximum input voltage range possible. The pin configuration and connection in the image above is correct, but it is recommended to double check the connection, because wiring mistakes can lead to damaging the chip and/or the Rpi.
 
 ## Circuit Debugging Tips
 
-If circuit doesn't work:
+If the circuit doesn't work:
 * Check every individual section and make sure it is doing its job
 * Read data sheet and make sure nothing is over-strained
 * Use multimeter and oscilloscope to check everything! 
-* We are not circuit pro but listen to circuit pros: http://web.mit.edu/6.101/www/reference/TheArtofDebuggingCircuits.pdf
+* Listen to the circuit pros: http://web.mit.edu/6.101/www/reference/TheArtofDebuggingCircuits.pdf
 * Switch out Op Amps, which are easy to break.
 
-If you don't see brain wave:
+If you don't see brain waves but the circuit works:
 * Most likely it is because the electrode placement is wrong. To solve this issue: look up what is the systematic and best practices in setting up electrodes, look up 10-20 EEG Measuring System, test it on a friend, wash your hair, etc
 * Try switching the electrode wires feeding into the instrumental amplifier, you could be amplifying negative voltages
 * Switch out Op Amps, which are easy to break.
@@ -154,15 +154,15 @@ Example of using digital filter to keep 8-12 HZ components and inverse fourier t
 
 ### Gaussian Analysis and Voltage Threshold 
 
-This code is created to 1) find the optimal voltage threshold which separates relaxed and concentrated data and 2) Evaluate how distinct the relaxed and concentrated datasets using statistical analysis.
+This code is created to 1) find the optimal voltage threshold which separates relaxed and concentrated data and 2) evaluate how distinct the relaxed and concentrated datasets using statistical analysis.
 
-We approximate concentrated and relaxed brain wave data sets each as normal Gaussian distributions. The cross point of the two gaussians give the best threshold voltage V0 which separates relaxed and concentrated data. This voltage threhold would minimizes overall wrong classifications. The overlap area divided by 2 give the probability of wrong classification since we have two normal distributions. More specifically, the ratio of overlap area left of V0 to right of V0 gives the percentage of wrong estimation being we guessed concentrated but is actually relaxed.
+We approximate concentrated and relaxed brain wave data sets each as normal Gaussian distributions. The cross point of the two gaussians give the best threshold voltage V0 which separates relaxed and concentrated data. This voltage threhold would minimize wrong classification rates. Specifically, the area overlap on the left is the probability of misclassifying the relaxed state, and the area overlap on the right is the probability of misclassifying the concentrated state.
 
-The following are the data from Hak and Ryan, applied with Gaussian analysis. 
+The following plots are data from Hak and Ryan, applied with Gaussian analysis. Note that the y axis (frequency of occurence for each RMS voltage bin) is scaled so that the histogram distribution integrates to 1. 
 
 <img src="brain_data/figures/Ryan_EEG_Distribution.png" width=475> <img src="brain_data/figures/Hak_EEG_Distribution.png" width=475>
 
-The above figure contains 30 max concentrated and 30 max relaxed data for each person. One can see that the distribution is indeed different for differrent people and that the relaxed and concentrated states are very distinct. In fact, the fail rate according to the Gaussian distribution is: Ryan: 0.01%, Hak: 0.0001%. However, do take this with a grain of salt because we do see some data right next to the threshold. This is likely due to we have not accounted for the artifacts. We also don't know if we can really assume the distribution is normal. Also notice that the concentrated distribution is much narrower than the relaxed one. This shows that it is much harder to relax than to concentrate: it is easy to make sure one is concentrate by looking at colorful images and doing mental calculations. However, even when one is relaxed, it could still be hard to control involuntary eye movements and thoughts, which could possibly have an effect on alpha wave magnitude. Also, the diagram does not indicate that there is no mid-level between the concentration and relaxation gaussians. The sharp distinction between concentrated and relaxed population is simply due to when taking the data, the person is trying their hardest to concentrate/relax.
+The above figure contains 30 samples of 5 seconds of concentrated brain wave data and 30 samples of relaxed data for each person. One can see that the distribution is indeed different for differrent people and that the relaxed and concentrated states are very distinct. In fact, the fail rate according to the Gaussian distribution is - Ryan: 0.01%, Hak: 0.0001%. However, we take this with a grain of salt because we do see some data right next to the threshold. This is likely due to the fact we have not accounted for the artifacts. We also don't know if we can assume the distribution is normal. Also notice that the concentrated distribution is much narrower than the relaxed one. This shows that it is much harder to relax than to concentrate: it is easy to make sure one is concentrate by looking at colorful images and doing mental calculations. However, even when one is relaxed, it could still be hard to control involuntary eye movements and thoughts, which could possibly have an effect on alpha wave magnitude. Also, the diagram does not indicate that there is no mid-level between the concentration and relaxation gaussians. The sharp distinction between concentrated and relaxed population is simply due to when taking the data, the person is trying their hardest to concentrate/relax.
 
 # Alpha Wave Data Visualized
 
@@ -170,7 +170,7 @@ The following are examples of post-processed concentrated and relaxed data from 
 
 <img src="brain_data/figures/Hak_Concentrated_Brain_Wave.png" width=475><img src="brain_data/figures/Hak_Relaxed_Brain_Wave.png" width=475>
 
-Example of fourier transform (from raw data) shows clear spike in the alpha wave 8-12 Hz range:
+Example of a fourier transform from raw data shows a clear spike in the alpha wave 8-12 Hz range:
 
 <img src="brain_data/figures/Hak_Relaxed_Power_Spectrum.png" width=475>
 
@@ -178,11 +178,11 @@ Example of fourier transform (from raw data) shows clear spike in the alpha wave
 
 # Applications
 
-All of the following application relies on the singular fact that alpha wave magnitude increases in relaxed state and decreases in concentrated state. Calibration is also very necessary for all of the applications since alpha wave magnitude varies from person to person, and since the gain of the second amplifier is adjustable.
+All of the following applications rely on the singular fact that alpha wave magnitude increases in the relaxed state and decreases in the concentrated state. Calibration is also very necessary for all of the applications since alpha wave magnitude varies from person to person, and since the gain of the second amplifier is adjustable.
 
 ## EEG Bird https://youtu.be/KFIHE_fInmM
 
-EEG_bird is a game modeled after the popular flappy bird game, but adjusted to take EEG brain waves as input. In general, the more concentrated the higher bird flies, the more relaxed/eye closed the lower bird flies. To make the bird motion smoother, we make the concentration level correspond not directly to the height of the bird, but the velocity of the bird (velocity positive when bird concentrated, negative when relaxed). 
+EEG bird is a game modeled after the popular flappy bird game, but adjusted to take EEG brain waves as input. In general, the more concentrated the higher bird flies, the more relaxed/eye closed the lower bird flies. To make the bird motion smoother, we make the concentration level correspond not directly to the height of the bird, but the velocity of the bird (velocity is positive when concentrated, negative when relaxed). 
 
 Even though the original flappy bird game is hard, using EEG signal as input makes the game even harder. There are many parameters one can change to adjust the difficulty level and make the game playable, such as: interval of the pipes, gap between top and buttom pipe, floor rate, pipe rate, relaxed/concentration level cutoff during game play, etc.
 
@@ -190,6 +190,8 @@ Even though the original flappy bird game is hard, using EEG signal as input mak
 
 
 ## Child Attention Monitor https://youtu.be/HQ8krHOXocc 
+
+The child attention monitor is a comical application of the EEG device. A parent could place the EEG on their child's head while doing homework, and if the child is relaxed for over a certain period of time (here 5 seconds), the device will set off an alarm to notify the parent. Below is the measured brain wave voltage over time in the youtube video.
 
 <img src="attention_monitor/video_fig.jpg" width=475>
 
