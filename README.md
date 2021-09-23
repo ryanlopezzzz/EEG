@@ -46,7 +46,7 @@ Here is a picture of the physical setup:
 
 <img src="images/physical_setup.png" width=500>
 
-## Eletrode Placement for Alpha Waves Measurements
+## Electrode Placement for Alpha Waves Measurements
 
 There are many possible electrode placements depending on what wave one choose to measure. In our project, we measure alpha waves. We need to use three electrode: one at the left mastoid (the bone at the back of the left ear) which is connected to the ground of the circuit. This electrode helps with noise cancelling; one located one inch above and one inch right of the nasion (the midline bony depression between the eyes where the frontal and two nasal bones meet); the last one located one inch above and one inch right of the inion (the projecting part of the occipital bone at the base of the skull). The 2nd and 3rd electrode placements are approximately in O2 and Fp2 regions in the below diagram:
 
