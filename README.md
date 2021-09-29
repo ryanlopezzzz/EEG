@@ -30,7 +30,7 @@ Our project presentation: https://docs.google.com/presentation/d/12gxBqD7eJtzKXW
 * Capacitors and Resistors
 * Two 9V batteries and battery cases
 * Bread board and wires
-* ADC Chip
+* ADC Chip (We used [ADS 1015](https://www.ti.com/lit/ds/symlink/ads1015.pdf))
 * Multimeter (for testing circuit)
 * Open Scope MZ (Used as oscilloscope and wave generator for testing circuit only due to covid, if you have access to a real oscilloscope and wave generator, lucky you and go for those)
 
