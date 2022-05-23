@@ -56,14 +56,14 @@ f1.show()
 ps = get_power_spectrum(time_series)
 freq = np.fft.fftfreq(nsamples, d=1.0/SPS) #frequencies for FFT of data
 f2, ax2 = plt.subplots()
-ax2.plot(xpoints, time_series)
-ax2.set(xlabel='Frequency (Hz)', ylabel='Voltage', title='Power Spectrum')    
+ax2.plot(freq, ps)
+ax2.set(xlabel='Frequency (Hz)', ylabel='Power', title='Power Spectrum')    
 f2.show()
 
 #Plots brain wave (raw data with frequencies outside 8 to 12 Hz filtered out)
 brain_wave = get_brain_wave(time_series, freq_min, freq_max, freq)
 f3, ax3 = plt.subplots()
-ax3.plot(xpoints, time_series)
+ax3.plot(xpoints, brain_wave)
 ax3.set(xlabel='Time (s)', ylabel='Voltage', title='Alpha Wave')    
 f3.show()
 
